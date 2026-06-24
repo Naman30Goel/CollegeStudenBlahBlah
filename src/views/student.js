@@ -128,38 +128,8 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
           </div>
         </div>
 
-        <!-- CONTRIBUTION HEATMAP GRAPH -->
-        <div class="card" style="grid-column: span 2;">
-          <div class="card-header">
-            <h3 class="font-bold flex items-center gap-2"><span>📅</span> Activity Heatmap</h3>
-            <span class="badge badge-emerald">🔥 ${student.streakDays}-Day Streak</span>
-          </div>
-          <div class="card-body">
-            <p class="text-sm text-secondary mb-4">Your daily uploads, learning achievements, and profile updates visualized.</p>
-            <div class="heatmap-container mb-4">
-              <div class="heatmap-grid">
-                ${heatmapHTML}
-              </div>
-              <div class="heatmap-legend">
-                <span>Less</span>
-                <div class="heatmap-cell cell-empty"></div>
-                <div class="heatmap-cell cell-low"></div>
-                <div class="heatmap-cell cell-medium"></div>
-                <div class="heatmap-cell cell-high"></div>
-                <span>More</span>
-              </div>
-            </div>
-            <div class="flex justify-between items-center text-xs text-muted" style="border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-3);">
-              <span>Last active: ${student.lastActivity ? new Date(student.lastActivity).toLocaleDateString() : 'Never'}</span>
-              <span>Streaks unlock exclusive badges at 7, 30, and 100 days.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid-3 mb-6">
         <!-- PROFILE FEEDBACK / ADVICE -->
-        <div class="card" style="grid-column: span 2; display: flex; flex-direction: column;">
+        <div class="card" style="display: flex; flex-direction: column;">
           <div class="card-header">
             <h3 class="font-bold flex items-center gap-2"><span>✨</span> AI Profile Insights</h3>
           </div>
