@@ -79,19 +79,19 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
           <p style="color: rgb(255 255 255 / 0.85); font-size: var(--text-sm);">Track your growth, review tailored match lists, and communicate with admissions representatives.</p>
         </div>
         <div class="hero-stats-grid">
-          <div class="hero-stat-card">
+          <div class="hero-stat-card" data-nav="strength" style="cursor: pointer; transition: transform var(--transition-fast);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
             <span class="hero-stat-value">${score}%</span>
             <span class="hero-stat-label">Profile Strength</span>
           </div>
-          <div class="hero-stat-card">
+          <div class="hero-stat-card" data-nav="matches" style="cursor: pointer; transition: transform var(--transition-fast);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
             <span class="hero-stat-value">${colleges.length}</span>
             <span class="hero-stat-label">College Matches</span>
           </div>
-          <div class="hero-stat-card">
+          <div class="hero-stat-card" data-nav="achievements" style="cursor: pointer; transition: transform var(--transition-fast);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
             <span class="hero-stat-value">${student.achievements.length}</span>
             <span class="hero-stat-label">Achievements</span>
           </div>
-          <div class="hero-stat-card">
+          <div class="hero-stat-card" data-nav="interested" style="cursor: pointer; transition: transform var(--transition-fast);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
             <span class="hero-stat-value">${approvedCount + pendingCount}</span>
             <span class="hero-stat-label">Colleges Interested</span>
           </div>
@@ -232,6 +232,26 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
       </div>
     </div>
   `;
+
+  // Attach event navigation listeners to hero stats
+  container.querySelectorAll('[data-nav]').forEach(card => {
+    card.addEventListener('click', () => {
+      const navTarget = card.getAttribute('data-nav');
+      if (navTarget === 'strength') {
+        const el = container.querySelector('.strength-widget');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (navTarget === 'matches') {
+        const navBtn = document.querySelector('.nav-item[data-tab="colleges"]');
+        if (navBtn) navBtn.click();
+      } else if (navTarget === 'achievements') {
+        const navBtn = document.querySelector('.nav-item[data-tab="achievements"]');
+        if (navBtn) navBtn.click();
+      } else if (navTarget === 'interested') {
+        const navBtn = document.querySelector('.nav-item[data-tab="inbox"]');
+        if (navBtn) navBtn.click();
+      }
+    });
+  });
 }
 
 // -------------------------------------------------------------
