@@ -7,7 +7,7 @@ export function renderCollegeDashboard(container, activeTab, triggerToast) {
   let isEmployee = false;
 
   if (!activeUser) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><h3>No active session found.</h3></div>';
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><h3>No active session found.</h3></div>';
     return;
   }
 
@@ -19,7 +19,7 @@ export function renderCollegeDashboard(container, activeTab, triggerToast) {
   }
 
   if (!college) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><h3>No associated college found for your session.</h3></div>';
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><h3>No associated college found for your session.</h3></div>';
     return;
   }
 
@@ -278,7 +278,7 @@ function renderMatchingTab(container, college, triggerToast) {
         ${matched.length === 0 ? `
           <div class="card" style="grid-column: 1 / -1;">
             <div class="empty-state">
-              <div class="empty-icon">👥</div>
+              <div class="empty-icon"></div>
               <h3>No students meet your targeting filters</h3>
               <p>Try widening your GPA or Profile Strength filters in the Targeting tab.</p>
             </div>
@@ -295,7 +295,7 @@ function renderMatchingTab(container, college, triggerToast) {
                   <span class="text-xs text-muted">Grade ${stu.grade} • ${stu.school}</span>
                 </div>
                 <div class="match-score-pill high">
-                  ⚡ ${stu.matchScore}% Match
+                   ${stu.matchScore}% Match
                 </div>
               </div>
               <div class="card-body flex-1 flex flex-col gap-3">
@@ -314,7 +314,7 @@ function renderMatchingTab(container, college, triggerToast) {
               </div>
               <div class="card-footer flex gap-2">
                 ${alreadySent ? `
-                  <button class="btn btn-secondary btn-sm w-full" disabled>✉️ Invitation Sent</button>
+                  <button class="btn btn-secondary btn-sm w-full" disabled> Invitation Sent</button>
                 ` : `
                   <button class="btn btn-primary btn-sm w-full btn-open-invite" data-id="${stu.id}">Connect</button>
                 `}
@@ -403,7 +403,7 @@ function renderEmployeesTab(container, college, isEmployee, triggerToast) {
         </div>
         ${!isEmployee ? `
           <button id="btn-add-employee" class="btn btn-primary">
-            <span>➕</span> Invite representative
+            <span></span> Invite representative
           </button>
         ` : ''}
       </div>

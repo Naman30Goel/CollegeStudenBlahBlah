@@ -4,7 +4,7 @@ import { computeProfileStrength, getStrengthBreakdown, getCollegeRecommendations
 export function renderCounselorDashboard(container, activeTab, triggerToast) {
   const counselor = store.getActiveUser();
   if (!counselor || counselor.role !== 'counselor') {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><h3>No active counselor session found.</h3></div>';
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><h3>No active counselor session found.</h3></div>';
     return;
   }
 
@@ -44,28 +44,28 @@ function renderOverviewTab(container, counselor, students, total, active, avgCom
       <!-- COUNSELOR METRICS CARDS -->
       <div class="grid-4 mb-6">
         <div class="metric-card">
-          <div class="metric-icon indigo">👥</div>
+          <div class="metric-icon indigo"></div>
           <div>
             <div class="metric-value">${total}</div>
             <div class="metric-label">Total Assigned Students</div>
           </div>
         </div>
         <div class="metric-card">
-          <div class="metric-icon blue">⚡</div>
+          <div class="metric-icon blue"></div>
           <div>
             <div class="metric-value">${active}</div>
             <div class="metric-label">Active This Week</div>
           </div>
         </div>
         <div class="metric-card">
-          <div class="metric-icon emerald">📈</div>
+          <div class="metric-icon emerald"></div>
           <div>
             <div class="metric-value">${avgCompletion}%</div>
             <div class="metric-label">Avg. Profile Strength</div>
           </div>
         </div>
         <div class="metric-card">
-          <div class="metric-icon amber">🎓</div>
+          <div class="metric-icon amber"></div>
           <div>
             <div class="metric-value">${avgReadiness}/100</div>
             <div class="metric-label">College Readiness Score</div>
@@ -90,7 +90,7 @@ function renderOverviewTab(container, counselor, students, total, active, avgCom
                       <h5 class="text-sm font-semibold truncate">${s.name}</h5>
                       <p class="text-xs text-muted truncate">Action: ${latestAch}</p>
                     </div>
-                    <span class="text-xs text-secondary" style="white-space: nowrap;">📅 ${lastActStr}</span>
+                    <span class="text-xs text-secondary" style="white-space: nowrap;"> ${lastActStr}</span>
                   </div>
                 `;
               }).join('')}
@@ -138,7 +138,7 @@ function renderOverviewTab(container, counselor, students, total, active, avgCom
 function renderMonitoringTab(container, students, triggerToast) {
   const searchInputHTML = `
     <div class="search-bar mb-6 w-full">
-      <span class="search-icon">🔍</span>
+      <span class="search-icon"></span>
       <input type="text" id="roster-search" class="input" placeholder="Search students by name, career interests, intended major...">
     </div>
   `;
@@ -344,7 +344,7 @@ function renderReportingTab(container, students, avgCompletion, avgReadiness, tr
           <p class="section-subtitle">Generate class performance logs and export PDF documents formatted for print.</p>
         </div>
         <button id="btn-export-pdf" class="btn btn-primary">
-          <span>📄</span> Export to A4 PDF
+          <span></span> Export to A4 PDF
         </button>
       </div>
 

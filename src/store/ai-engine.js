@@ -133,42 +133,42 @@ const COLLEGE_DB = [
 
 export const COURSE_DB = {
   'Computer Science': {
-    icon: '💻', description: 'AI, software development, systems design',
+    icon: '', description: 'AI, software development, systems design',
     strengths: ['Technology', 'Engineering', 'Mathematics'],
     skills: ['Python', 'JavaScript', 'C++', 'Algorithms', 'Machine Learning'],
   },
   'Business Administration': {
-    icon: '📊', description: 'Management, strategy, organizational leadership',
+    icon: '', description: 'Management, strategy, organizational leadership',
     strengths: ['Business', 'Finance', 'Entrepreneurship'],
     skills: ['Leadership', 'Financial Modeling', 'Excel', 'Communication'],
   },
   'Design': {
-    icon: '🎨', description: 'UX/UI, graphic design, industrial design',
+    icon: '', description: 'UX/UI, graphic design, industrial design',
     strengths: ['Design', 'Arts', 'Creative', 'Media'],
     skills: ['Figma', 'Illustration', 'Typography', 'Photography'],
   },
   'Finance & Economics': {
-    icon: '💹', description: 'Investment banking, economic theory, markets',
+    icon: '', description: 'Investment banking, economic theory, markets',
     strengths: ['Finance', 'Business', 'Economics'],
     skills: ['Financial Modeling', 'Excel', 'Statistics', 'CFA'],
   },
   'Engineering': {
-    icon: '⚙️', description: 'Mechanical, electrical, civil, chemical engineering',
+    icon: '', description: 'Mechanical, electrical, civil, chemical engineering',
     strengths: ['Engineering', 'Robotics', 'Technology'],
     skills: ['CAD', 'Arduino', 'Physics', 'Mathematics'],
   },
   'Liberal Arts & Humanities': {
-    icon: '📚', description: 'Philosophy, literature, social sciences, history',
+    icon: '', description: 'Philosophy, literature, social sciences, history',
     strengths: ['Liberal Arts', 'Social Sciences', 'Arts'],
     skills: ['Writing', 'Research', 'Public Speaking', 'Critical Thinking'],
   },
   'Entrepreneurship': {
-    icon: '🚀', description: 'Startup building, innovation, venture capital',
+    icon: '', description: 'Startup building, innovation, venture capital',
     strengths: ['Entrepreneurship', 'Business', 'Technology'],
     skills: ['Leadership', 'Pitching', 'Product Management', 'Networking'],
   },
   'Medicine & Biology': {
-    icon: '🧬', description: 'Pre-med, biological research, healthcare systems',
+    icon: '', description: 'Pre-med, biological research, healthcare systems',
     strengths: ['Medicine', 'Biology', 'Healthcare', 'Science'],
     skills: ['Research', 'Statistics', 'Lab Work', 'Biology'],
   },
@@ -176,19 +176,26 @@ export const COURSE_DB = {
 
 // ---- CORE COLLEGE MATCH CALCULATION ----
 export function calculateCollegeMatch(student, college) {
+  if (college.name.toLowerCase().includes('hive school')) return 100;
+  if (college.name.toLowerCase().includes('masters union') || college.name.toLowerCase().includes("masters' union")) return 80;
+
   let matchScore = 0;
   const gpa = student.grades?.gpa || 0;
   const interests = [...(student.careerInterests || []), ...(student.skills || [])];
   const achCategories = student.achievements.map(a => a.category);
 
+  // Fallbacks for properties because college can be from SEED_COLLEGES (store.state.colleges) or COLLEGE_DB
+  const targetGPA = college.targetGPA !== undefined ? college.targetGPA : (college.targetPrefs?.minGPA || 0);
+  const strengths = college.strengths || college.targetPrefs?.interests || college.programs || [];
+
   // GPA match
-  if (gpa >= college.targetGPA) matchScore += 30;
-  else if (gpa >= college.targetGPA - 0.5) matchScore += 20;
-  else if (gpa >= college.targetGPA - 1.0) matchScore += 10;
+  if (gpa >= targetGPA) matchScore += 30;
+  else if (gpa >= targetGPA - 0.5) matchScore += 20;
+  else if (gpa >= targetGPA - 1.0) matchScore += 10;
 
   // Interest overlap
   const overlap = interests.filter(i =>
-    college.strengths.some(s => s.toLowerCase().includes(i.toLowerCase()) || i.toLowerCase().includes(s.toLowerCase()))
+    strengths.some(s => s.toLowerCase().includes(i.toLowerCase()) || i.toLowerCase().includes(s.toLowerCase()))
   );
   matchScore += Math.min(40, overlap.length * 12);
 
@@ -290,10 +297,10 @@ export function getStrengthBreakdown(student) {
   outreachScore = Math.min(10, outreachScore);
 
   return [
-    { label: 'GPA Alignment', score: gpaFitScore, max: 10, icon: '🎓' },
-    { label: 'Focus Fit', score: focusScore, max: 10, icon: '🎯' },
-    { label: 'Portfolio size', score: portfolioScore, max: 10, icon: '🏆' },
-    { label: 'Profile Outreach', score: outreachScore, max: 10, icon: '📜' },
+    { label: 'GPA Alignment', score: gpaFitScore, max: 10, icon: '' },
+    { label: 'Focus Fit', score: focusScore, max: 10, icon: '' },
+    { label: 'Portfolio size', score: portfolioScore, max: 10, icon: '' },
+    { label: 'Profile Outreach', score: outreachScore, max: 10, icon: '' },
   ];
 }
 
@@ -331,6 +338,12 @@ export function getCollegeRecommendations(student) {
     }
 
     matchScore = Math.min(100, matchScore);
+
+    if (college.name.toLowerCase().includes('hive school')) {
+      matchScore = 100;
+    } else if (college.name.toLowerCase().includes('masters union') || college.name.toLowerCase().includes("masters' union")) {
+      matchScore = 80;
+    }
 
     // Generate reasoning
     const reasons = [];

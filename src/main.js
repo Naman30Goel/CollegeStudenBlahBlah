@@ -34,10 +34,10 @@ function triggerToast(message, type = 'success') {
   const toast = document.createElement('div');
   toast.className = 'toast';
   
-  let icon = '✅';
-  if (type === 'warning') icon = '⚠️';
-  if (type === 'error') icon = '❌';
-  if (type === 'info') icon = '💡';
+  let icon = '';
+  if (type === 'warning') icon = '';
+  if (type === 'error') icon = '';
+  if (type === 'info') icon = '';
 
   toast.innerHTML = `
     <span>${icon}</span>
@@ -118,7 +118,7 @@ function renderLogin(root) {
 
         <div class="flex flex-col gap-3" style="max-width: 400px;">
           <button id="btn-mock-google" class="btn btn-secondary w-full justify-center">
-            <span>🌐</span> Simulated Google OAuth Login (Naman)
+            <span></span> Simulated Google OAuth Login (Aanya)
           </button>
           <button id="btn-start-onboarding" class="btn btn-ghost w-full justify-center text-sm font-semibold">
             First time student? <strong>Get Started / Onboarding</strong>
@@ -146,8 +146,8 @@ function renderLogin(root) {
   });
 
   root.querySelector('#btn-mock-google').addEventListener('click', () => {
-    // Naman Goel is the default seeded student
-    const user = store.login('naman@example.com', 'demo');
+    // Aanya Sharma is the default seeded student
+    const user = store.login('aanya@example.com', 'demo');
     if (user) {
       currentTab = 'dashboard';
       triggerToast('Authenticated via Google OAuth.', 'success');
@@ -174,7 +174,7 @@ function renderOnboarding(root) {
         <p class="text-xs text-muted">Let's set up your profile details first.</p>
         <div class="input-group">
           <label class="input-label" for="ob-name">Full Name</label>
-          <input class="input" type="text" id="ob-name" value="${onboardingData.name}" placeholder="Naman Goel" required>
+          <input class="input" type="text" id="ob-name" value="${onboardingData.name}" placeholder="Aanya Sharma" required>
         </div>
         <div class="input-group">
           <label class="input-label" for="ob-school">High School Name</label>
@@ -244,7 +244,7 @@ function renderOnboarding(root) {
         </div>
         
         <div class="feedback-item tip mt-4">
-          <p class="text-xs">✅ Parent/guardian consent required for student profile audits under data compliance guidelines.</p>
+          <p class="text-xs"> Parent/guardian consent required for student profile audits under data compliance guidelines.</p>
         </div>
       </div>
     `;
@@ -356,48 +356,48 @@ function renderAppShell(root, user) {
   if (user.role === 'student') {
     navHTML = `
       <button class="nav-item ${currentTab === 'dashboard' ? 'active' : ''}" data-tab="dashboard">
-        <span class="nav-icon">📊</span> Dashboard
+        <span class="nav-icon"></span> Dashboard
       </button>
       <button class="nav-item ${currentTab === 'achievements' ? 'active' : ''}" data-tab="achievements">
-        <span class="nav-icon">🎖️</span> Portfolio Log
+        <span class="nav-icon"></span> Portfolio Log
       </button>
       <button class="nav-item ${currentTab === 'colleges' ? 'active' : ''}" data-tab="colleges">
-        <span class="nav-icon">🏫</span> AI Matches
+        <span class="nav-icon"></span> AI Matches
       </button>
       <button class="nav-item ${currentTab === 'discovery' ? 'active' : ''}" data-tab="discovery">
-        <span class="nav-icon">👥</span> Discovery
+        <span class="nav-icon"></span> Discovery
       </button>
       <button class="nav-item ${currentTab === 'inbox' ? 'active' : ''}" data-tab="inbox">
-        <span class="nav-icon">✉️</span> Messages Inbox
+        <span class="nav-icon"></span> Messages Inbox
       </button>
     `;
   } else if (user.role === 'counselor') {
     navHTML = `
       <button class="nav-item ${currentTab === 'overview' ? 'active' : ''}" data-tab="overview">
-        <span class="nav-icon">📊</span> School Overview
+        <span class="nav-icon"></span> School Overview
       </button>
       <button class="nav-item ${currentTab === 'monitoring' ? 'active' : ''}" data-tab="monitoring">
-        <span class="nav-icon">👁️</span> Student Monitoring
+        <span class="nav-icon"></span> Student Monitoring
       </button>
       <button class="nav-item ${currentTab === 'reporting' ? 'active' : ''}" data-tab="reporting">
-        <span class="nav-icon">📄</span> Guidance Reports
+        <span class="nav-icon"></span> Guidance Reports
       </button>
     `;
   } else if (user.role === 'college_admin' || user.role === 'college_employee') {
     const isAdmin = user.role === 'college_admin';
     navHTML = `
       <button class="nav-item ${currentTab === 'profile' ? 'active' : ''}" data-tab="profile">
-        <span class="nav-icon">🏫</span> College Profile
+        <span class="nav-icon"></span> College Profile
       </button>
       <button class="nav-item ${currentTab === 'matching' ? 'active' : ''}" data-tab="matching">
-        <span class="nav-icon">⚡</span> Student Matches
+        <span class="nav-icon"></span> Student Matches
       </button>
       ${isAdmin ? `
         <button class="nav-item ${currentTab === 'targeting' ? 'active' : ''}" data-tab="targeting">
-          <span class="nav-icon">🎯</span> Target Preferences
+          <span class="nav-icon"></span> Target Preferences
         </button>
         <button class="nav-item ${currentTab === 'employees' ? 'active' : ''}" data-tab="employees">
-          <span class="nav-icon">👥</span> Manage Employees
+          <span class="nav-icon"></span> Manage Employees
         </button>
       ` : ''}
     `;
@@ -405,7 +405,7 @@ function renderAppShell(root, user) {
 
   // Roster profiles for quick role switcher (evaluation/judges convenience)
   const allSwitchUsers = [
-    { id: 'stu_001', name: 'Naman (Student)', role: 'Student' },
+    { id: 'stu_001', name: 'Aanya (Student)', role: 'Student' },
     { id: 'cou_001', name: 'Ms. Deepa (Counselor)', role: 'Counselor' },
     { id: 'col_001', name: 'Ashoka (University Admin)', role: 'Admissions' },
     { id: 'emp_001', name: 'Vikram (University Employee)', role: 'Admissions staff' }
@@ -460,7 +460,7 @@ function renderAppShell(root, user) {
 
           <div style="position: relative;">
             <button id="btn-notifications" class="btn btn-ghost btn-icon" style="position: relative;">
-              <span>🔔</span>
+              <span></span>
               ${store.getUnreadCount(user.id) > 0 ? `<div class="notif-dot"></div>` : ''}
             </button>
             <div id="notif-dropdown" class="card hidden" style="position: absolute; top: 48px; right: 0; width: 280px; z-index: 50; max-height: 300px; overflow-y: auto;">
