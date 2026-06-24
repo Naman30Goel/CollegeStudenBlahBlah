@@ -1,26 +1,26 @@
 // ============================================================
-// ConnectED - Central State Store
+// ProfileED - Central State Store
 // Reactive localStorage-backed store for all app state
 // ============================================================
 
-const STORAGE_KEY = 'connected_app_state';
+const STORAGE_KEY = 'profileed_app_state';
 
 // ---- SEED DATA ----
 const SEED_STUDENTS = [
   {
     id: 'stu_001', role: 'student',
-    name: 'Aanya Sharma', email: 'aanya@example.com', password: 'demo',
-    school: 'Delhi Public School', grade: 11, city: 'New Delhi',
-    careerInterests: ['Technology', 'Entrepreneurship'],
-    intendedDegree: 'Computer Science',
-    dreamColleges: ['MIT', 'Stanford', 'IIT Delhi'],
-    skills: ['Python', 'UI Design', 'Public Speaking'],
-    socialLinks: { linkedin: 'linkedin.com/in/aanya', github: 'github.com/aanya' },
-    avatar: null,
+    name: 'Naman Goel', email: 'naman@example.com', password: 'demo',
+    school: 'Government Model Senior Secondary School', grade: 11, city: 'Chandigarh',
+    careerInterests: ['Finance', 'AI & Tech', 'PCM', 'JEE Aspirant', 'Entrepreneurship'],
+    intendedDegree: 'Finance & Economics',
+    dreamColleges: ['Hive School', 'Masters\' Union'],
+    skills: ['Python', 'UI Design', 'Public Speaking', 'Financial Modeling'],
+    socialLinks: { linkedin: 'linkedin.com/in/naman-goel-b163b9311', github: 'github.com/Naman30Goel' },
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
     achievements: [
+      { id: 'ach_003', title: 'Founder - The Fintrition Club', category: 'Leadership Roles', date: '2025-01', description: 'A teen-led club decoding finance for teens globally.', document: null },
       { id: 'ach_001', title: 'National Science Olympiad - Gold', category: 'Olympiads', date: '2024-11', description: 'Placed 1st nationally in Physics Olympiad', document: null },
       { id: 'ach_002', title: 'Google Cloud Certification', category: 'Certifications', date: '2024-09', description: 'Earned Associate Cloud Engineer cert', document: null },
-      { id: 'ach_003', title: 'Student Council President', category: 'Leadership Roles', date: '2024-08', description: 'Led 300+ student body for full academic year', document: null },
       { id: 'ach_004', title: 'Hackathon Winner - HackDTU', category: 'Competitions', date: '2024-07', description: 'Built an AI tutoring platform, won first place', document: null },
       { id: 'ach_005', title: 'NGO Volunteering - 120 hrs', category: 'Volunteering', date: '2024-06', description: 'Taught digital literacy in rural communities', document: null },
     ],
@@ -174,6 +174,34 @@ const SEED_COLLEGES = [
     sentRequests: [],
     avatar: null,
   },
+  {
+    id: 'col_004', role: 'college_admin',
+    name: 'Hive School', email: 'admissions@hiveschool.co', password: 'demo',
+    description: 'A revenue-first business school focusing on SaaS, go-to-market strategies, and tech sales.',
+    fees: '₹4,50,000/year', location: 'Gurugram, Haryana',
+    programs: ['Post Graduate Program in Revenue', 'Entrepreneurship', 'Sales Strategy'],
+    scholarships: ['GTM Scholarships', 'Diversity Awards'],
+    placement: 'Average package ₹9 LPA, top GTM roles in SaaS firms',
+    applicationDeadline: '2025-06-30',
+    targetPrefs: { minGPA: 7.2, grades: [11, 12], interests: ['Business', 'Entrepreneurship', 'Technology'], minScore: 50 },
+    employees: ['emp_003'],
+    sentRequests: ['stu_001'],
+    avatar: null,
+  },
+  {
+    id: 'col_005', role: 'college_admin',
+    name: 'Masters\' Union', email: 'admissions@mastersunion.org', password: 'demo',
+    description: 'An industry-led business school with experiential learn-by-doing programs in business leadership and technology.',
+    fees: '₹8,50,000/year', location: 'Gurugram, Haryana',
+    programs: ['PGP in Business Leadership', 'Tech Management', 'Undergraduate Program'],
+    scholarships: ['MU Scholarships up to 100%', 'Founder Grants'],
+    placement: 'Average package ₹21 LPA, consulting, SaaS startup leaders',
+    applicationDeadline: '2025-04-30',
+    targetPrefs: { minGPA: 7.8, grades: [11, 12], interests: ['Business', 'Entrepreneurship', 'Leadership', 'Technology'], minScore: 60 },
+    employees: [],
+    sentRequests: [],
+    avatar: null,
+  },
 ];
 
 const SEED_EMPLOYEES = [
@@ -189,6 +217,12 @@ const SEED_EMPLOYEES = [
     collegeId: 'col_003', jobRole: 'Counselor',
     avatar: null,
   },
+  {
+    id: 'emp_003', role: 'college_employee',
+    name: 'Aman Rudola', email: 'aman@hiveschool.co', password: 'demo',
+    collegeId: 'col_004', jobRole: 'Admissions Lead',
+    avatar: null,
+  },
 ];
 
 // ---- INITIAL STATE ----
@@ -199,9 +233,35 @@ function createInitialState() {
     counselors: [SEED_COUNSELOR],
     colleges: SEED_COLLEGES,
     employees: SEED_EMPLOYEES,
-    communications: [], // { id, fromCollegeId, toStudentId, type, message, status, createdAt }
-    messages: [],       // { id, communicationId, fromId, text, createdAt }
-    notifications: [],  // { id, userId, text, read, createdAt }
+    communications: [
+      {
+        id: 'comm_001',
+        fromCollegeId: 'col_004',
+        toStudentId: 'stu_001',
+        type: 'interest',
+        message: 'Aman Rudola here from Hive School. We saw your SaaS and entrepreneurship portfolio achievements and would love to chat.',
+        status: 'approved',
+        createdAt: Date.now() - 3600000,
+      }
+    ],
+    messages: [
+      {
+        id: 'msg_001',
+        communicationId: 'comm_001',
+        fromId: 'col_004',
+        text: 'Hey Naman! I am Aman Rudola, Admissions Lead at Hive School. We saw your achievements and would love to connect about our Post Graduate Program in Revenue & Tech. Let me know when you are available!',
+        createdAt: Date.now() - 3600000,
+      }
+    ],
+    notifications: [
+      {
+        id: 'notif_001',
+        userId: 'stu_001',
+        text: 'Aman Rudola from Hive School sent you a contact connection.',
+        read: true,
+        createdAt: Date.now() - 3600000,
+      }
+    ],
   };
 }
 
@@ -214,11 +274,32 @@ class Store {
 
   _load() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      let raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        raw = localStorage.getItem('connected_app_state'); // Migration fallback
+      }
       if (raw) {
         const parsed = JSON.parse(raw);
-        // Merge seed data in case new seed data was added
-        return { ...createInitialState(), ...parsed };
+        const seedState = createInitialState();
+        if (!parsed.colleges) parsed.colleges = [];
+        seedState.colleges.forEach(col => {
+          if (!parsed.colleges.some(c => c.id === col.id)) {
+            parsed.colleges.push(col);
+          }
+        });
+        if (!parsed.employees) parsed.employees = [];
+        seedState.employees.forEach(emp => {
+          if (!parsed.employees.some(e => e.id === emp.id)) {
+            parsed.employees.push(emp);
+          }
+        });
+        if (!parsed.communications || parsed.communications.length === 0) {
+          parsed.communications = seedState.communications;
+        }
+        if (!parsed.messages || parsed.messages.length === 0) {
+          parsed.messages = seedState.messages;
+        }
+        return { ...seedState, ...parsed };
       }
     } catch (e) { /* ignore */ }
     return createInitialState();

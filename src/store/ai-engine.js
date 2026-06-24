@@ -1,5 +1,5 @@
 // ============================================================
-// ConnectED - AI Engine
+// ProfileED - AI Engine
 // Computes profile strength scores, college/course recommendations
 // ============================================================
 
@@ -80,6 +80,22 @@ const COLLEGE_DB = [
     targetGPA: 7.5, acceptance: '25%',
     link: 'https://flame.edu.in',
   },
+  {
+    id: 'rec_013', name: 'Hive School', type: 'new-age', country: 'India', location: 'Gurugram, Haryana',
+    description: 'A revenue-first business school focusing on SaaS, go-to-market strategies, and tech sales.',
+    programs: ['Post Graduate Program in Revenue', 'Entrepreneurship', 'Sales Strategy'],
+    strengths: ['Business', 'Entrepreneurship', 'Technology', 'Finance'],
+    targetGPA: 7.2, acceptance: '12%',
+    link: 'https://hiveschool.co',
+  },
+  {
+    id: 'rec_014', name: 'Masters\' Union', type: 'new-age', country: 'India', location: 'Gurugram, Haryana',
+    description: 'An industry-led business school with experiential learn-by-doing programs in business leadership and technology.',
+    programs: ['PGP in Business Leadership', 'Technology Management', 'Marketing & Sales'],
+    strengths: ['Business', 'Entrepreneurship', 'Technology', 'Finance', 'Leadership'],
+    targetGPA: 7.8, acceptance: '8%',
+    link: 'https://mastersunion.org',
+  },
   // International
   {
     id: 'rec_009', name: 'MIT', type: 'international', country: 'USA', location: 'Cambridge, MA',
@@ -115,7 +131,7 @@ const COLLEGE_DB = [
   },
 ];
 
-const COURSE_DB = {
+export const COURSE_DB = {
   'Computer Science': {
     icon: '💻', description: 'AI, software development, systems design',
     strengths: ['Technology', 'Engineering', 'Mathematics'],
@@ -158,53 +174,126 @@ const COURSE_DB = {
   },
 };
 
-// ---- PROFILE STRENGTH SCORE ----
+// ---- CORE COLLEGE MATCH CALCULATION ----
+export function calculateCollegeMatch(student, college) {
+  let matchScore = 0;
+  const gpa = student.grades?.gpa || 0;
+  const interests = [...(student.careerInterests || []), ...(student.skills || [])];
+  const achCategories = student.achievements.map(a => a.category);
+
+  // GPA match
+  if (gpa >= college.targetGPA) matchScore += 30;
+  else if (gpa >= college.targetGPA - 0.5) matchScore += 20;
+  else if (gpa >= college.targetGPA - 1.0) matchScore += 10;
+
+  // Interest overlap
+  const overlap = interests.filter(i =>
+    college.strengths.some(s => s.toLowerCase().includes(i.toLowerCase()) || i.toLowerCase().includes(s.toLowerCase()))
+  );
+  matchScore += Math.min(40, overlap.length * 12);
+
+  // Achievement bonus
+  const achBonus = achCategories.filter(cat =>
+    ['Olympiads', 'Competitions', 'Certifications', 'Internships'].includes(cat)
+  ).length;
+  matchScore += Math.min(30, achBonus * 8);
+
+  return Math.min(100, matchScore);
+}
+
+// ---- PROFILE STRENGTH SCORE (DREAM COLLEGE READINESS) ----
 export function computeProfileStrength(student) {
   if (!student) return 0;
 
-  const scores = { academics: 0, leadership: 0, extracurriculars: 0, certifications: 0 };
-  const maxes = { academics: 25, leadership: 25, extracurriculars: 25, certifications: 25 };
+  const dreamColleges = student.dreamColleges || [];
+  let scores = [];
 
-  // Academics (25pts)
-  const gpa = student.grades?.gpa || 0;
-  scores.academics += Math.min(15, (gpa / 10) * 15);
-  if (student.achievements.some(a => a.category === 'Olympiads')) scores.academics += 10;
+  // Find dream college records in COLLEGE_DB
+  if (dreamColleges.length > 0) {
+    dreamColleges.forEach(dcName => {
+      const college = COLLEGE_DB.find(c => c.name.toLowerCase().includes(dcName.toLowerCase()) || dcName.toLowerCase().includes(c.name.toLowerCase()));
+      if (college) {
+        scores.push(calculateCollegeMatch(student, college));
+      } else {
+        // Mock average match score based on student GPA for self-reported dream colleges
+        const gpaVal = student.grades?.gpa || 0;
+        scores.push(Math.min(100, Math.round((gpaVal / 10) * 60 + student.achievements.length * 6)));
+      }
+    });
+  }
 
-  // Leadership (25pts)
-  const leadershipAchs = student.achievements.filter(a => a.category === 'Leadership Roles');
-  scores.leadership += Math.min(20, leadershipAchs.length * 8);
-  if (student.skills?.length >= 3) scores.leadership += 5;
+  // If no dream colleges are set, or none of them matched, use top 3 matches from COLLEGE_DB
+  if (scores.length === 0) {
+    COLLEGE_DB.forEach(college => {
+      scores.push(calculateCollegeMatch(student, college));
+    });
+    scores.sort((a, b) => b - a);
+    scores = scores.slice(0, 3);
+  }
 
-  // Extracurriculars (25pts)
-  const extraAchs = student.achievements.filter(a => ['Competitions', 'Volunteering', 'Internships'].includes(a.category));
-  scores.extracurriculars += Math.min(20, extraAchs.length * 5);
-  if (student.followers?.length > 0) scores.extracurriculars += 5;
-
-  // Certifications (25pts)
-  const certs = student.achievements.filter(a => a.category === 'Certifications');
-  scores.certifications += Math.min(20, certs.length * 7);
-  if (student.socialLinks && Object.keys(student.socialLinks).length > 0) scores.certifications += 5;
-
-  const total = Object.entries(scores).reduce((sum, [key, val]) => sum + Math.min(val, maxes[key]), 0);
-  return Math.min(100, Math.round(total));
+  const average = scores.reduce((sum, s) => sum + s, 0) / (scores.length || 1);
+  return Math.min(100, Math.round(average));
 }
 
 // ---- CATEGORY BREAKDOWN ----
 export function getStrengthBreakdown(student) {
   if (!student) return [];
+  
   const gpa = student.grades?.gpa || 0;
-  const academics = Math.min(25, Math.round((gpa / 10) * 15) + (student.achievements.some(a => a.category === 'Olympiads') ? 10 : 0));
-  const leadershipAchs = student.achievements.filter(a => a.category === 'Leadership Roles').length;
-  const leadership = Math.min(25, leadershipAchs * 8 + (student.skills?.length >= 3 ? 5 : 0));
-  const extraAchs = student.achievements.filter(a => ['Competitions', 'Volunteering', 'Internships'].includes(a.category)).length;
-  const extracurriculars = Math.min(25, extraAchs * 5 + (student.followers?.length > 0 ? 5 : 0));
-  const certs = student.achievements.filter(a => a.category === 'Certifications').length;
-  const certifications = Math.min(25, certs * 7 + (student.socialLinks && Object.keys(student.socialLinks).length > 0 ? 5 : 0));
+  const dreamColleges = student.dreamColleges || [];
+  
+  // Find average target GPA of dream colleges
+  let targetGPA = 8.5; // baseline target
+  if (dreamColleges.length > 0) {
+    let gpTotals = 0;
+    let gpCounts = 0;
+    dreamColleges.forEach(dcName => {
+      const college = COLLEGE_DB.find(c => c.name.toLowerCase().includes(dcName.toLowerCase()) || dcName.toLowerCase().includes(c.name.toLowerCase()));
+      if (college) {
+        gpTotals += college.targetGPA;
+        gpCounts++;
+      }
+    });
+    if (gpCounts > 0) targetGPA = gpTotals / gpCounts;
+  }
+
+  // GPA fit out of 10
+  const gpaFitScore = Math.min(10, Math.round((gpa / targetGPA) * 10));
+
+  // Focus alignment
+  const studentInterests = [...(student.careerInterests || []), ...(student.skills || [])];
+  let focusScore = 0;
+  if (dreamColleges.length > 0) {
+    let focusMatches = 0;
+    dreamColleges.forEach(dcName => {
+      const college = COLLEGE_DB.find(c => c.name.toLowerCase().includes(dcName.toLowerCase()) || dcName.toLowerCase().includes(c.name.toLowerCase()));
+      if (college) {
+        const overlap = studentInterests.filter(i =>
+          college.strengths.some(s => s.toLowerCase().includes(i.toLowerCase()))
+        );
+        if (overlap.length > 0) focusMatches++;
+      }
+    });
+    focusScore = Math.round((focusMatches / dreamColleges.length) * 10);
+  } else {
+    focusScore = Math.min(10, studentInterests.length * 2);
+  }
+
+  // Portfolio size
+  const portfolioScore = Math.min(10, student.achievements.length * 2);
+
+  // Outreach (1 for public, 1 for LinkedIn, 1 for GitHub)
+  let outreachScore = 0;
+  if (student.isPublic) outreachScore += 3;
+  if (student.socialLinks?.linkedin) outreachScore += 3;
+  if (student.socialLinks?.github) outreachScore += 4;
+  outreachScore = Math.min(10, outreachScore);
+
   return [
-    { label: 'Academics', score: academics, max: 25, icon: '🎓' },
-    { label: 'Leadership', score: leadership, max: 25, icon: '🏆' },
-    { label: 'Extracurriculars', score: extracurriculars, max: 25, icon: '⚡' },
-    { label: 'Certifications', score: certifications, max: 25, icon: '📜' },
+    { label: 'GPA Alignment', score: gpaFitScore, max: 10, icon: '🎓' },
+    { label: 'Focus Fit', score: focusScore, max: 10, icon: '🎯' },
+    { label: 'Portfolio size', score: portfolioScore, max: 10, icon: '🏆' },
+    { label: 'Profile Outreach', score: outreachScore, max: 10, icon: '📜' },
   ];
 }
 

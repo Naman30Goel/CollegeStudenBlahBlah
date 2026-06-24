@@ -269,7 +269,7 @@ function renderMatchingTab(container, college, triggerToast) {
     <div class="animate-fade-up stagger">
       <div class="section-header">
         <div>
-          <h2 class="section-title">ConnectED Match Recommendations</h2>
+          <h2 class="section-title">ProfileED Match Recommendations</h2>
           <p class="section-subtitle">Top high school students who match your GPA boundaries, grades, and interest targets.</p>
         </div>
       </div>
@@ -332,7 +332,7 @@ function renderMatchingTab(container, college, triggerToast) {
         </div>
         <form id="form-invite-student">
           <div class="dialog-body">
-            <p class="text-xs text-secondary mb-4">Under ConnectED privacy rules, students must review and approve your communication request before message exchange is enabled.</p>
+            <p class="text-xs text-secondary mb-4">Under ProfileED privacy rules, students must review and approve your communication request before message exchange is enabled.</p>
             <div class="input-group">
               <label class="input-label" for="inv-type">Request Channel Type</label>
               <select class="input select" id="inv-type" required>
@@ -344,7 +344,7 @@ function renderMatchingTab(container, college, triggerToast) {
             </div>
             <div class="input-group">
               <label class="input-label" for="inv-msg">Personalized Introduction Message</label>
-              <textarea class="input" id="inv-msg" required>We reviewed your achievements on ConnectED and think you would be a great fit for our programs. Let's schedule an introductory chat.</textarea>
+              <textarea class="input" id="inv-msg" required>We reviewed your achievements on ProfileED and think you would be a great fit for our programs. Let's schedule an introductory chat.</textarea>
             </div>
           </div>
           <div class="dialog-footer">

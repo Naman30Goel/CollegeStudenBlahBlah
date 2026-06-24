@@ -1,5 +1,7 @@
 import { store } from '../store/index.js';
-import { computeProfileStrength, getStrengthBreakdown, getCollegeRecommendations, getCourseRecommendations, getProfileFeedback } from '../store/ai-engine.js';
+import { computeProfileStrength, getStrengthBreakdown, getCollegeRecommendations, getCourseRecommendations, getProfileFeedback, COURSE_DB, calculateCollegeMatch } from '../store/ai-engine.js';
+
+let selectedCategoryFilter = null;
 
 export function renderStudentDashboard(container, activeTab, triggerToast) {
   const student = store.getActiveUser();
@@ -36,31 +38,6 @@ export function renderStudentDashboard(container, activeTab, triggerToast) {
 // 1. DASHBOARD TAB
 // -------------------------------------------------------------
 function renderDashboardTab(container, student, score, breakdown, colleges, courses, feedback, approvedCount, pendingCount, triggerToast) {
-  // Generate random data for GitHub-style heatmap (84 cells = 12 weeks)
-  let heatmapHTML = '';
-  // Let's seed the heatmap with some active days based on student achievements and random variance
-  const seed = student.name.charCodeAt(0) + student.achievements.length;
-  for (let i = 0; i < 84; i++) {
-    // Determine cell intensity: 0 (gray), 1 (light green), 2 (medium green), 3 (dark green)
-    let intensity = 0;
-    const r = Math.sin(seed + i) * 10;
-    if (r > 7) intensity = 3;
-    else if (r > 4) intensity = 2;
-    else if (r > 1) intensity = 1;
-    
-    // Highlight today (last cell)
-    if (i === 83 && student.streakDays > 0) {
-      intensity = 3;
-    }
-
-    let colorClass = 'cell-empty';
-    if (intensity === 1) colorClass = 'cell-low';
-    if (intensity === 2) colorClass = 'cell-medium';
-    if (intensity === 3) colorClass = 'cell-high';
-
-    heatmapHTML += `<div class="heatmap-cell ${colorClass}" title="Activity Level: ${intensity}"></div>`;
-  }
-
   // Determine circular badge color
   let scoreColorClass = 'low';
   if (score >= 70) scoreColorClass = 'high';
@@ -69,171 +46,352 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
   // SVG dash array calculation (circumference of 120px ring is 2 * pi * 55 = 345.5)
   const strokeDashoffset = Math.max(0, 345.5 - (345.5 * score) / 100);
 
+  const initials = student.name ? student.name.split(' ').map(n => n[0]).join('') : 'S';
+
   container.innerHTML = `
     <div class="animate-fade-up stagger">
-      <!-- HERO MISSION CONTROL CENTER (Sparingly Glassmorphic) -->
-      <div class="hero-mission-control mb-6">
-        <div class="hero-left">
-          <span class="badge badge-indigo mb-2">Welcome Back, ${student.name}</span>
-          <h1 class="text-3xl font-extrabold mb-2" style="color: white; line-height: 1.1;">Build Your Student Profile.<br>Get Discovered By Top Colleges.</h1>
-          <p style="color: rgb(255 255 255 / 0.85); font-size: var(--text-sm);">Track your growth, review tailored match lists, and communicate with admissions representatives.</p>
+      <!-- LINKEDIN-STYLE STUDENT PROFILE HEADER -->
+      <div class="card linkedin-profile-header mb-6" style="padding: 0; overflow: hidden; position: relative; border-radius: var(--radius-2xl);">
+        <div class="profile-cover-banner" style="height: 160px; background: linear-gradient(135deg, #1f4068 0%, #162447 50%, #1b1b2f 100%); position: relative;">
+          <div style="position: absolute; right: var(--space-4); top: var(--space-4); background: rgb(255 255 255 / 0.15); backdrop-filter: blur(4px); padding: 4px 12px; border-radius: var(--radius-full); color: white; font-size: 10px; font-weight: bold; letter-spacing: 1px;">
+            ProfileED CERTIFIED
+          </div>
         </div>
-        <div class="hero-stats-grid">
-          <div class="hero-stat-card" data-nav="strength" style="cursor: pointer; transition: transform var(--transition-fast);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-            <span class="hero-stat-value">${score}%</span>
-            <span class="hero-stat-label">Profile Strength</span>
+        <div class="profile-info-section" style="padding: var(--space-4) var(--space-6); position: relative; margin-top: -60px;">
+          <!-- Avatar overlapping the cover -->
+          <div class="profile-avatar-container" style="position: relative; display: inline-block;">
+            <div class="avatar font-bold" style="width: 120px; height: 120px; font-size: 2.5rem; border: 4px solid var(--color-bg); background-color: var(--color-primary); color: white; box-shadow: var(--shadow-md); border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+              ${student.avatar ? `<img src="${student.avatar}" alt="${student.name}" style="width: 100%; height: 100%; object-fit: cover;">` : initials}
+            </div>
+            <!-- Verification badge -->
+            <div style="position: absolute; bottom: 8px; right: 8px; background: var(--color-success); border: 2px solid var(--color-bg); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;" title="Profile Audited">✓</div>
           </div>
-          <div class="hero-stat-card" data-nav="matches" style="cursor: pointer; transition: transform var(--transition-fast);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-            <span class="hero-stat-value">${colleges.length}</span>
-            <span class="hero-stat-label">College Matches</span>
+          
+          <div class="flex justify-between items-start flex-wrap mt-3 gap-4">
+            <div style="flex: 1; min-width: 250px;">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h1 class="text-2xl font-extrabold" style="margin: 0; color: var(--color-text);">${student.name}</h1>
+                <span class="badge badge-indigo flex items-center gap-1" style="font-size: 10px; padding: 2px 8px; cursor: pointer;" id="btn-verify-top">
+                  <span>⚡</span> Verify in 2 minutes
+                </span>
+              </div>
+              <p class="text-base text-secondary font-medium mt-1" style="line-height: 1.3;">
+                ${student.careerInterests.slice(0, 4).join(' | ')} | ${student.school} | Grade ${student.grade}
+              </p>
+              <p class="text-xs text-muted mt-2">
+                📍 ${student.city}, India • <a href="#" id="lnk-contact-info" class="text-primary font-semibold hover-underline" style="text-decoration: none;">Contact info</a> • <span class="font-semibold text-primary">500+ connections</span>
+              </p>
+            </div>
+            
+            <div class="flex flex-col gap-2 align-end text-end" style="font-size: var(--text-sm);">
+              <div class="flex items-center gap-2 justify-end" style="color: var(--color-text);">
+                <span style="font-size: 1.25rem;">🏛️</span>
+                <span class="font-bold text-secondary text-sm">${student.school}</span>
+              </div>
+            </div>
           </div>
-          <div class="hero-stat-card" data-nav="achievements" style="cursor: pointer; transition: transform var(--transition-fast);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-            <span class="hero-stat-value">${student.achievements.length}</span>
-            <span class="hero-stat-label">Achievements</span>
-          </div>
-          <div class="hero-stat-card" data-nav="interested" style="cursor: pointer; transition: transform var(--transition-fast);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
-            <span class="hero-stat-value">${approvedCount + pendingCount}</span>
-            <span class="hero-stat-label">Colleges Interested</span>
+
+          <div class="flex gap-2 mt-4 flex-wrap">
+            <button class="btn btn-primary btn-sm btn-open-colleges" style="border-radius: var(--radius-full);">Open to Colleges</button>
+            <button class="btn btn-secondary btn-sm btn-enhance-profile" style="border-radius: var(--radius-full); border: 1px solid var(--color-border);">Enhance Profile</button>
+            <button class="btn btn-ghost btn-sm btn-icon" style="border-radius: 50%; border: 1px solid var(--color-border); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">•••</button>
           </div>
         </div>
       </div>
 
-      <div class="grid-3 mb-6">
-        <!-- PROFILE STRENGTH RING WIDGET -->
-        <div class="strength-widget">
-          <h3 class="font-bold text-center" style="font-size: var(--text-base);">Profile Completion</h3>
-          <div class="strength-ring">
-            <svg>
-              <circle class="strength-ring-track" cx="70" cy="70" r="55"></circle>
-              <circle class="strength-ring-fill ${scoreColorClass}" cx="70" cy="70" r="55" 
-                      style="stroke-dasharray: 345.5; stroke-dashoffset: ${strokeDashoffset};"></circle>
-            </svg>
-            <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-              <span class="score-badge ${scoreColorClass}" style="font-size: 1.75rem;">${score}</span>
-              <span style="font-size: var(--text-xs); color: var(--color-text-secondary); font-weight: var(--weight-medium);">of 100</span>
+      <!-- TWO COLUMN LAYOUT -->
+      <div class="grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); align-items: start;">
+        <!-- LEFT COLUMN: MAIN FEED -->
+        <div class="flex flex-col gap-6" style="min-width: 0;">
+          <!-- SUGGESTED FOR YOU (AI Insights) -->
+          <div class="card" style="padding: var(--space-5); border-radius: var(--radius-2xl);">
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="font-bold" style="font-size: var(--text-base); margin: 0;">Suggested for you</h3>
+              <span class="text-xs text-muted">Intermediate Profile Strength</span>
             </div>
-          </div>
-          <div class="w-full flex flex-col gap-2 mt-2">
-            ${breakdown.map(item => `
-              <div class="flex items-center justify-between">
-                <span class="text-sm flex items-center gap-2"><span>${item.icon}</span> ${item.label}</span>
-                <div class="flex items-center gap-2">
-                  <div class="mini-progress" style="width: 80px;">
-                    <div class="mini-progress-fill" style="width: ${(item.score / item.max) * 100}%; background-color: var(--color-success);"></div>
-                  </div>
-                  <span class="breakdown-score">${item.score}/${item.max}</span>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
+            <div style="background-color: var(--color-slate-100); border-radius: var(--radius-full); height: 8px; width: 100%; margin-block-end: var(--space-3); overflow: hidden;">
+              <div style="width: 70%; background-color: var(--color-primary); height: 100%; border-radius: var(--radius-full);"></div>
+            </div>
+            <p class="text-xs text-muted mb-4">Complete these recommended actions to increase your Dream College readiness by 24%.</p>
+            
+            <div class="flex flex-col gap-3">
+              ${feedback.map(item => {
+                let taskTitle = 'Refine Profile Details';
+                let actionText = 'Update details';
+                let actionTarget = 'strength';
+                if (item.text.includes('GPA')) {
+                  taskTitle = 'Improve Academic GPA';
+                  actionText = 'View tips';
+                  actionTarget = 'strength';
+                } else if (item.text.includes('achievements') || item.text.includes('diverse')) {
+                  taskTitle = 'Expand Extracurricular Portfolio';
+                  actionText = 'Add achievement';
+                  actionTarget = 'achievements';
+                } else if (item.text.includes('internship') || item.text.includes('Internships')) {
+                  taskTitle = 'Secure a Summer Internship';
+                  actionText = 'Log experience';
+                  actionTarget = 'achievements';
+                } else if (item.text.includes('certification') || item.text.includes('Certifications')) {
+                  taskTitle = 'Earn a Career Certification';
+                  actionText = 'Add certificate';
+                  actionTarget = 'achievements';
+                } else if (item.text.includes('LinkedIn') || item.text.includes('social')) {
+                  taskTitle = 'Connect Professional Social Links';
+                  actionText = 'Edit socials';
+                  actionTarget = 'contact';
+                }
 
-        <!-- PROFILE FEEDBACK / ADVICE -->
-        <div class="card" style="display: flex; flex-direction: column;">
-          <div class="card-header">
-            <h3 class="font-bold flex items-center gap-2"><span>✨</span> AI Profile Insights</h3>
-          </div>
-          <div class="card-body flex-1 flex flex-col gap-3">
-            ${feedback.map(item => `
-              <div class="feedback-item ${item.type}">
-                <span>${item.type === 'success' ? '✅' : item.type === 'warning' ? '⚠️' : '💡'}</span>
-                <p class="text-sm">${item.text}</p>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- STREAK BADGES -->
-        <div class="card">
-          <div class="card-header">
-            <h3 class="font-bold">Unlocked Badges</h3>
-          </div>
-          <div class="card-body flex flex-col gap-4">
-            <div class="flex items-center gap-3">
-              <div class="badge-icon-wrap ${student.streakDays >= 7 ? 'active' : ''}">🏆</div>
-              <div>
-                <h5 class="text-sm font-semibold">7 Day Streak</h5>
-                <p class="text-xs text-muted">Maintain activity for 7 consecutive days.</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="badge-icon-wrap ${student.streakDays >= 30 ? 'active' : ''}">🔥</div>
-              <div>
-                <h5 class="text-sm font-semibold">30 Day Streak</h5>
-                <p class="text-xs text-muted">Maintain activity for 30 consecutive days.</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="badge-icon-wrap ${student.streakDays >= 100 ? 'active' : ''}">🚀</div>
-              <div>
-                <h5 class="text-sm font-semibold">100 Day Streak</h5>
-                <p class="text-xs text-muted">Complete 100 consecutive days of growth.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- DREAM COLLEGES & COURSE RECOMMENDATIONS GRID -->
-      <div class="grid-3 mb-6">
-        <!-- DREAM COLLEGES CARD -->
-        <div class="card" style="display: flex; flex-direction: column;">
-          <div class="card-header">
-            <h3 class="font-bold flex items-center gap-2"><span>🏫</span> My Dream Colleges</h3>
-          </div>
-          <div class="card-body flex-1 flex flex-col gap-1">
-            ${(student.dreamColleges || []).length === 0 ? `
-              <div class="text-center text-muted text-xs p-4">No dream colleges added to your profile.</div>
-            ` : (student.dreamColleges || []).map(dcName => {
-              const match = colleges.find(c => c.name.toLowerCase().includes(dcName.toLowerCase()) || dcName.toLowerCase().includes(c.name.toLowerCase()));
-              const matchScoreHTML = match 
-                ? `<span class="badge badge-emerald">${match.matchScore}% Fit</span>` 
-                : `<span class="badge badge-slate">Calculating</span>`;
-              return `
-                <div class="flex items-center justify-between pb-3" style="border-block-end: 1px solid var(--color-border); margin-block-end: var(--space-3);">
-                  <div class="flex items-center gap-2" style="min-width: 0;">
-                    <span style="font-size: 1.25rem; flex-shrink: 0;">🏛️</span>
-                    <div style="min-width: 0;">
-                      <h5 class="text-sm font-semibold truncate" style="max-width: 130px;">${dcName}</h5>
+                return `
+                  <div class="feedback-item ${item.type} p-3 rounded-lg flex items-start gap-3" style="border: 1px solid var(--color-border); margin: 0; background: var(--color-slate-50);">
+                    <span style="font-size: 1.25rem; flex-shrink: 0; margin-top: 2px;">
+                      ${item.type === 'success' ? '🚀' : item.type === 'warning' ? '✍️' : '💡'}
+                    </span>
+                    <div style="flex: 1; min-width: 0;">
+                      <h4 class="text-sm font-semibold" style="margin: 0; color: var(--color-text);">${taskTitle}</h4>
+                      <p class="text-xs text-secondary mt-1" style="line-height: 1.3;">${item.text}</p>
+                      <button class="btn btn-secondary btn-sm mt-3 btn-suggestion-action" data-target="${actionTarget}" style="border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 2px 12px; font-size: 11px;">
+                        ${actionText}
+                      </button>
                     </div>
                   </div>
-                  ${matchScoreHTML}
-                </div>
-              `;
-            }).join('')}
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- ANALYTICS SECTION -->
+          <div class="card" style="padding: var(--space-5); border-radius: var(--radius-2xl);">
+            <div class="flex flex-col gap-1 mb-4">
+              <h3 class="font-bold flex items-center gap-2" style="font-size: var(--text-base); margin: 0;">
+                Analytics
+              </h3>
+              <span class="text-xs text-muted flex items-center gap-1">🔒 Private to you</span>
+            </div>
+            <div class="grid-3 text-start">
+              <div class="analytics-stat-card p-3 rounded-lg hover-bg" style="cursor: pointer; border: 1px solid var(--color-border); transition: all var(--transition-fast);" data-nav="interested">
+                <div class="text-2xl font-extrabold text-primary" style="line-height: 1;">394</div>
+                <div class="text-xs font-semibold mt-1" style="color: var(--color-text);">profile views</div>
+                <div class="text-xs text-muted mt-1" style="font-size: 10px;">Discover which colleges viewed your profile.</div>
+              </div>
+              <div class="analytics-stat-card p-3 rounded-lg hover-bg" style="cursor: pointer; border: 1px solid var(--color-border); transition: all var(--transition-fast);" data-nav="achievements">
+                <div class="text-2xl font-extrabold text-success" style="line-height: 1;">104</div>
+                <div class="text-xs font-semibold mt-1" style="color: var(--color-text);">post impressions</div>
+                <div class="text-xs text-muted mt-1" style="font-size: 10px;">Check out who's engaging with your portfolio.</div>
+              </div>
+              <div class="analytics-stat-card p-3 rounded-lg hover-bg" style="cursor: pointer; border: 1px solid var(--color-border); transition: all var(--transition-fast);" data-nav="matches">
+                <div class="text-2xl font-extrabold text-indigo" style="line-height: 1;">72</div>
+                <div class="text-xs font-semibold mt-1" style="color: var(--color-text);">search appearances</div>
+                <div class="text-xs text-muted mt-1" style="font-size: 10px;">See how often you appear in college queries.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COURSE RECOMMENDATIONS -->
+          <div class="card" style="border-radius: var(--radius-2xl);">
+            <div class="card-header flex justify-between items-center flex-wrap gap-2">
+              <h3 class="font-bold flex items-center gap-2"><span>📚</span> AI Suggested Degree Programs</h3>
+              <button id="btn-show-colleges" class="btn btn-secondary btn-sm">Show All Matches</button>
+            </div>
+            <div class="card-body">
+              <div class="grid-2">
+                ${courses.map(course => `
+                  <div class="course-card" style="display: flex; flex-direction: column; justify-content: justify; height: 100%;">
+                    <div class="course-icon">${course.icon}</div>
+                    <h4 class="font-bold text-base mt-2">${course.name}</h4>
+                    <p class="text-xs text-secondary mt-1 flex-1">${course.description}</p>
+                    <div class="course-skills-list mt-2">
+                      ${course.skills.slice(0, 3).map(skill => `<span class="badge badge-slate">${skill}</span>`).join('')}
+                    </div>
+                    <div style="margin-block-start: var(--space-4); display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); flex-wrap: wrap;">
+                      <span class="badge badge-emerald">${course.matchScore}% Match</span>
+                      <button class="btn btn-secondary btn-xs btn-show-category-colleges" data-category="${course.name}" style="font-size: 11px; padding: 4px 8px; border-radius: var(--radius-md);">Show Colleges</button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- MY DREAM COLLEGES CARD -->
+          <div class="card" style="display: flex; flex-direction: column; border-radius: var(--radius-2xl);">
+            <div class="card-header">
+              <h3 class="font-bold flex items-center gap-2"><span>🏫</span> My Dream Colleges</h3>
+            </div>
+            <div class="card-body flex-1 flex flex-col gap-1">
+              ${(student.dreamColleges || []).length === 0 ? `
+                <div class="text-center text-muted text-xs p-4">No dream colleges added to your profile.</div>
+              ` : (student.dreamColleges || []).map(dcName => {
+                const match = store.state.colleges.find(c => c.name.toLowerCase().includes(dcName.toLowerCase()) || dcName.toLowerCase().includes(c.name.toLowerCase()));
+                const fitPercent = match ? calculateCollegeMatch(student, match) : Math.min(100, Math.round((student.grades?.gpa || 0) * 8 + student.achievements.length * 5));
+                const matchScoreHTML = `<span class="badge badge-emerald" style="flex-shrink: 0;">${fitPercent}% Fit</span>`;
+                return `
+                  <div class="flex items-center justify-between pb-3" style="border-block-end: 1px solid var(--color-border); margin-block-end: var(--space-3); gap: var(--space-3);">
+                    <div class="flex items-center gap-2" style="min-width: 0; flex: 1;">
+                      <span style="font-size: 1.25rem; flex-shrink: 0;">🏛️</span>
+                      <div style="min-width: 0; flex: 1;">
+                        <h5 class="text-sm font-semibold truncate" style="margin: 0;">${dcName}</h5>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2" style="flex-shrink: 0;">
+                      ${matchScoreHTML}
+                      ${match ? `
+                        <button class="btn btn-ghost btn-sm btn-view-dream-college" data-id="${match.id}" style="padding: 2px 8px; font-size: 11px; font-weight: bold; border: 1px solid var(--color-border); border-radius: var(--radius-md);">View</button>
+                      ` : ''}
+                      <button class="btn-remove-dream-college btn-ghost btn-icon btn-sm text-error" data-name="${dcName}" title="Remove from dreams" style="padding: 2px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">✕</button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+              
+              <!-- Inline Add Dream College Form -->
+              <div style="margin-block-start: var(--space-4); padding-block-start: var(--space-4); border-block-start: 1px dashed var(--color-border);">
+                <form id="form-add-dream-college" class="flex gap-2">
+                  <input type="text" id="add-dc-name" class="input" placeholder="Add another dream college (e.g. Stanford)..." style="font-size: 12px; padding: 6px 12px; flex: 1;" required autocomplete="off">
+                  <button type="submit" class="btn btn-primary btn-sm" style="padding: 6px 12px; font-size: 12px; border-radius: var(--radius-lg);">Add College</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- LINKEDIN-STYLE EXPERIENCE SECTION -->
+          <div class="card" style="padding: var(--space-5); border-radius: var(--radius-2xl);">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="font-bold flex items-center gap-2" style="font-size: var(--text-base); margin: 0;">
+                Experience & Portfolio accomplishments
+              </h3>
+              <button class="btn btn-ghost btn-sm btn-enhance-profile" style="color: var(--color-primary); font-weight: bold; font-size: var(--text-sm);">
+                View All Log
+              </button>
+            </div>
+            <div class="flex flex-col gap-4">
+              ${student.achievements.slice(0, 3).map(ach => {
+                let achIcon = '📜';
+                if (ach.category === 'Olympiads') achIcon = '🏆';
+                else if (ach.category === 'Competitions') achIcon = '🥇';
+                else if (ach.category === 'Leadership Roles') achIcon = '👥';
+                else if (ach.category === 'Volunteering') achIcon = '🌱';
+                else if (ach.category === 'Internships') achIcon = '💼';
+
+                return `
+                  <div class="flex items-start gap-3 pb-4" style="border-block-end: 1px solid var(--color-border); margin-block-end: var(--space-2); &:last-child { border-block-end: none; margin-block-end: 0; }">
+                    <div style="font-size: 1.5rem; background-color: var(--color-slate-50); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-lg); flex-shrink: 0; border: 1px solid var(--color-border);">
+                      ${achIcon}
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                      <h4 class="text-sm font-bold" style="margin: 0; color: var(--color-text);">${ach.title}</h4>
+                      <p class="text-xs font-semibold text-secondary mt-1">${ach.category} • ${student.school}</p>
+                      <p class="text-xs text-muted mt-1">📅 ${ach.date}</p>
+                      <p class="text-xs text-secondary mt-2" style="line-height: 1.3;">${ach.description}</p>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
           </div>
         </div>
 
-        <!-- COURSE RECOMMENDATIONS -->
-        <div class="card" style="grid-column: span 2;">
-          <div class="card-header">
-            <h3 class="font-bold flex items-center gap-2"><span>📚</span> AI Suggested Degree Programs</h3>
-            <span class="text-xs text-muted">Based on your skills & achievements</span>
-          </div>
-          <div class="card-body">
-            <div class="grid-2">
-              ${courses.map(course => `
-                <div class="course-card">
-                  <div class="course-icon">${course.icon}</div>
-                  <h4 class="font-bold text-base mt-2">${course.name}</h4>
-                  <p class="text-xs text-secondary mt-1 flex-1">${course.description}</p>
-                  <div class="course-skills-list mt-2">
-                    ${course.skills.slice(0, 3).map(skill => `<span class="badge badge-slate">${skill}</span>`).join('')}
-                  </div>
-                  <div style="margin-block-start: var(--space-4); display: flex; align-items: center; justify-content: space-between;">
-                    <span class="text-xs font-semibold text-primary">Match score</span>
-                    <span class="badge badge-emerald">${course.matchScore}% Match</span>
+        <!-- RIGHT COLUMN: SIDEBAR -->
+        <div class="flex flex-col gap-6">
+          <!-- PROFILE STRENGTH RING WIDGET -->
+          <div class="strength-widget" style="margin: 0; border-radius: var(--radius-2xl);">
+            <h3 class="font-bold text-center" style="font-size: var(--text-base);">Dream College Readiness</h3>
+            <div class="strength-ring">
+              <svg>
+                <circle class="strength-ring-track" cx="70" cy="70" r="55"></circle>
+                <circle class="strength-ring-fill ${scoreColorClass}" cx="70" cy="70" r="55" 
+                        style="stroke-dasharray: 345.5; stroke-dashoffset: ${strokeDashoffset};"></circle>
+              </svg>
+              <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <span class="score-badge ${scoreColorClass}" style="font-size: 1.75rem;">${score}%</span>
+                <span style="font-size: var(--text-xs); color: var(--color-text-secondary); font-weight: var(--weight-medium);">readiness</span>
+              </div>
+            </div>
+            <div class="w-full flex flex-col gap-2 mt-2">
+              ${breakdown.map(item => `
+                <div class="flex items-center justify-between">
+                  <span class="text-xs flex items-center gap-1"><span>${item.icon}</span> ${item.label}</span>
+                  <div class="flex items-center gap-1">
+                    <div class="mini-progress" style="width: 60px;">
+                      <div class="mini-progress-fill" style="width: ${(item.score / item.max) * 100}%; background-color: var(--color-success);"></div>
+                    </div>
+                    <span class="breakdown-score" style="font-size: 10px;">${item.score}/${item.max}</span>
                   </div>
                 </div>
               `).join('')}
             </div>
           </div>
+
+          <!-- PEOPLE YOU MAY KNOW -->
+          <div class="card" style="padding: var(--space-4); border-radius: var(--radius-2xl);">
+            <h3 class="font-bold text-sm mb-3" style="margin: 0;">People you may know</h3>
+            <div class="flex flex-col gap-3">
+              ${store.state.students.filter(s => s.id !== student.id).slice(0, 3).map(s => {
+                const isFollowing = student.following.includes(s.id);
+                return `
+                  <div class="flex items-center gap-3 justify-between" style="border-block-end: 1px solid var(--color-border); padding-block-end: var(--space-2); &:last-child { border-block-end: none; padding-block-end: 0; }">
+                    <div class="flex items-center gap-2" style="min-width: 0; flex: 1;">
+                      <div class="avatar avatar-sm font-bold" style="background-color: var(--color-primary-muted); color: var(--color-primary); flex-shrink: 0; border-radius: 50%; font-size: 11px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                        ${s.name.split(' ').map(n=>n[0]).join('')}
+                      </div>
+                      <div style="min-width: 0; flex: 1;">
+                        <h4 class="text-xs font-bold truncate" style="margin: 0;">${s.name}</h4>
+                        <p class="text-xs text-muted truncate" style="margin: 0; font-size: 9px;">${s.intendedDegree} aspirant</p>
+                      </div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm btn-follow-suggestion" data-id="${s.id}" style="padding: 2px 10px; font-size: 10px; height: 26px; min-block-size: auto; border-radius: var(--radius-full); border: 1px solid var(--color-border); flex-shrink: 0;">
+                      ${isFollowing ? 'Unfollow' : 'Connect'}
+                    </button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- COLLEGES INTERESTED (Admissions channels) -->
+          <div class="card" style="padding: var(--space-4); border-radius: var(--radius-2xl);">
+            <h3 class="font-bold text-sm mb-3" style="margin: 0;">Colleges Interested</h3>
+            <div class="flex flex-col gap-3">
+              ${store.state.communications.filter(c => c.toStudentId === student.id).map(c => {
+                const col = store.state.colleges.find(col => col.id === c.fromCollegeId);
+                return `
+                  <div class="flex items-center gap-3 justify-between" style="border-block-end: 1px solid var(--color-border); padding-block-end: var(--space-2); &:last-child { border-block-end: none; padding-block-end: 0; }">
+                    <div class="flex items-center gap-2" style="min-width: 0; flex: 1;">
+                      <span style="font-size: 1.25rem; flex-shrink: 0;">🏛️</span>
+                      <div style="min-width: 0; flex: 1;">
+                        <h4 class="text-xs font-bold truncate" style="margin: 0;">${col.name}</h4>
+                        <span class="badge ${c.status === 'approved' ? 'badge-emerald' : 'badge-amber'}" style="font-size: 8px; padding: 1px 4px;">
+                          ${c.status}
+                        </span>
+                      </div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm btn-message-college" style="padding: 2px 10px; font-size: 10px; height: 26px; min-block-size: auto; border-radius: var(--radius-full); border: 1px solid var(--color-border); flex-shrink: 0;">
+                      Message
+                    </button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- MOCK COLLEGE DETAIL DIALOG FOR DASHBOARD -->
+    <dialog id="dialog-college-dashboard">
+      <div class="dialog-header">
+        <h3 id="modal-college-name-db" class="font-bold">College Details</h3>
+        <button id="dialog-col-close-db" class="btn btn-ghost btn-icon btn-sm">✕</button>
+      </div>
+      <div class="dialog-body" id="modal-college-body-db">
+        <!-- Populated dynamically -->
+      </div>
+      <div class="dialog-footer">
+        <button id="dialog-col-cancel-db" class="btn btn-ghost">Close</button>
+      </div>
+    </dialog>
   `;
 
-  // Attach event navigation listeners to hero stats
+  // Attach event navigation listeners to stats and elements
   container.querySelectorAll('[data-nav]').forEach(card => {
     card.addEventListener('click', () => {
       const navTarget = card.getAttribute('data-nav');
@@ -252,6 +410,227 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
       }
     });
   });
+
+  const showCollegesBtn = container.querySelector('#btn-show-colleges');
+  if (showCollegesBtn) {
+    showCollegesBtn.addEventListener('click', () => {
+      selectedCategoryFilter = null; // Clear filter for showing all matches
+      const navBtn = document.querySelector('.nav-item[data-tab="colleges"]');
+      if (navBtn) navBtn.click();
+    });
+  }
+
+  // Handle click on specific course category button
+  container.querySelectorAll('.btn-show-category-colleges').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const category = btn.getAttribute('data-category');
+      selectedCategoryFilter = category;
+      const navBtn = document.querySelector('.nav-item[data-tab="colleges"]');
+      if (navBtn) navBtn.click();
+    });
+  });
+
+  // Suggestion deep links
+  container.querySelectorAll('.btn-suggestion-action').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-target');
+      if (target === 'achievements') {
+        const navBtn = document.querySelector('.nav-item[data-tab="achievements"]');
+        if (navBtn) navBtn.click();
+      } else if (target === 'contact') {
+        const lnk = container.querySelector('#lnk-contact-info');
+        if (lnk) lnk.click();
+      } else if (target === 'strength') {
+        const el = container.querySelector('.strength-widget');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+
+  // Open Colleges action
+  const openToCollegesBtn = container.querySelector('.btn-open-colleges');
+  if (openToCollegesBtn) {
+    openToCollegesBtn.addEventListener('click', () => {
+      triggerToast('Status updated: You are now marked as Open to Colleges!', 'success');
+    });
+  }
+
+  // Enhance Profile action
+  container.querySelectorAll('.btn-enhance-profile').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const navBtn = document.querySelector('.nav-item[data-tab="achievements"]');
+      if (navBtn) navBtn.click();
+    });
+  });
+
+  // Message buttons
+  container.querySelectorAll('.btn-message-college').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const navBtn = document.querySelector('.nav-item[data-tab="inbox"]');
+      if (navBtn) navBtn.click();
+    });
+  });
+
+  // Verify in 2 minutes clicker
+  const verifyBtn = container.querySelector('#btn-verify-top');
+  if (verifyBtn) {
+    verifyBtn.addEventListener('click', () => {
+      triggerToast('Portfolio verification audit requested! Counselor notified.', 'info');
+    });
+  }
+
+  // Sidebar connect suggestions handler
+  container.querySelectorAll('.btn-follow-suggestion').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const targetId = btn.getAttribute('data-id');
+      const isFollowing = student.following.includes(targetId);
+      if (isFollowing) {
+        store.unfollowStudent(student.id, targetId);
+        triggerToast('Unfollowed peer student.', 'warning');
+      } else {
+        store.followStudent(student.id, targetId);
+        triggerToast('Connected & Following peer student!', 'success');
+      }
+      renderStudentDashboard(container, 'dashboard', triggerToast);
+    });
+  });
+
+  // Contact info popup
+  const lnkContact = container.querySelector('#lnk-contact-info');
+  if (lnkContact) {
+    lnkContact.addEventListener('click', (e) => {
+      e.preventDefault();
+      const dialog = document.createElement('dialog');
+      dialog.className = 'card';
+      dialog.style.padding = 'var(--space-5)';
+      dialog.style.borderRadius = 'var(--radius-xl)';
+      dialog.style.width = '320px';
+      dialog.innerHTML = `
+        <div class="dialog-header flex justify-between items-center mb-4" style="border-block-end: 1px solid var(--color-border); padding-block-end: var(--space-2);">
+          <h3 class="font-bold text-sm" style="margin: 0;">Contact Info</h3>
+          <button class="btn-close-contact btn-ghost btn-icon btn-sm" style="border: none; background: transparent; cursor: pointer; font-size: 1rem;">✕</button>
+        </div>
+        <div class="dialog-body flex flex-col gap-3">
+          <p class="text-xs"><strong>📧 Email:</strong><br>${student.email}</p>
+          ${student.socialLinks.linkedin ? `<p class="text-xs"><strong>🔗 LinkedIn Profile:</strong><br><a href="https://${student.socialLinks.linkedin}" target="_blank" class="text-primary hover-underline">${student.socialLinks.linkedin}</a></p>` : ''}
+          ${student.socialLinks.github ? `<p class="text-xs"><strong>💻 GitHub Portfolio:</strong><br><a href="https://${student.socialLinks.github}" target="_blank" class="text-primary hover-underline">${student.socialLinks.github}</a></p>` : ''}
+        </div>
+        <div class="dialog-footer mt-4 text-center">
+          <button class="btn btn-secondary btn-sm btn-close-contact-btn" style="border-radius: var(--radius-full); width: 100px;">Close</button>
+        </div>
+      `;
+      document.body.appendChild(dialog);
+      dialog.showModal();
+      
+      const closeDialog = () => {
+        dialog.close();
+        dialog.remove();
+      };
+      
+      dialog.querySelector('.btn-close-contact').addEventListener('click', closeDialog);
+      dialog.querySelector('.btn-close-contact-btn').addEventListener('click', closeDialog);
+    });
+  }
+
+  // Interactive Dream Colleges Handlers
+  const addDreamForm = container.querySelector('#form-add-dream-college');
+  if (addDreamForm) {
+    addDreamForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = container.querySelector('#add-dc-name');
+      const name = input.value.trim();
+      if (name) {
+        const currentList = student.dreamColleges || [];
+        if (!currentList.includes(name)) {
+          store.updateStudent(student.id, {
+            dreamColleges: [...currentList, name]
+          });
+          triggerToast(`Added ${name} to your dream colleges!`, 'success');
+          renderStudentDashboard(container, 'dashboard', triggerToast);
+        } else {
+          triggerToast('College already in dream list.', 'warning');
+        }
+      }
+    });
+  }
+
+  container.querySelectorAll('.btn-remove-dream-college').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const name = btn.getAttribute('data-name');
+      const currentList = student.dreamColleges || [];
+      const updatedList = currentList.filter(n => n !== name);
+      store.updateStudent(student.id, {
+        dreamColleges: updatedList
+      });
+      triggerToast(`Removed ${name} from dream list.`, 'warning');
+      renderStudentDashboard(container, 'dashboard', triggerToast);
+    });
+  });
+
+  // View dream college details dialog
+  const dbDialog = container.querySelector('#dialog-college-dashboard');
+  if (dbDialog) {
+    container.querySelector('#dialog-col-close-db').addEventListener('click', () => dbDialog.close());
+    container.querySelector('#dialog-col-cancel-db').addEventListener('click', () => dbDialog.close());
+
+    container.querySelectorAll('.btn-view-dream-college').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const colId = btn.getAttribute('data-id');
+        const matchedCollege = store.state.colleges.find(c => c.id === colId);
+        if (matchedCollege) {
+          container.querySelector('#modal-college-name-db').innerText = matchedCollege.name;
+          
+          let strengthsHTML = matchedCollege.strengths.map(s => `<span class="badge badge-indigo">${s}</span>`).join('');
+          
+          const fitScore = calculateCollegeMatch(student, matchedCollege);
+          const reasons = [];
+          const gpa = student.grades?.gpa || 0;
+          const interests = [...(student.careerInterests || []), ...(student.skills || [])];
+          const overlap = interests.filter(i =>
+            matchedCollege.strengths.some(s => s.toLowerCase().includes(i.toLowerCase()) || i.toLowerCase().includes(s.toLowerCase()))
+          );
+          if (overlap.length > 0) reasons.push(`Strong alignment in ${overlap.slice(0, 2).join(' & ')}`);
+          if (gpa >= matchedCollege.targetGPA) reasons.push(`Your GPA (${gpa}) meets the target`);
+          
+          const improvements = [];
+          if (gpa < matchedCollege.targetGPA) improvements.push(`Aim for GPA above ${matchedCollege.targetGPA}`);
+          if (!student.achievements?.some(a => a.category === 'Certifications')) improvements.push('Complete a relevant certification course');
+          
+          let improvementsHTML = improvements.length > 0 
+            ? improvements.map(i => `<li class="text-xs text-warning" style="margin-inline-start: var(--space-4);">⚠️ ${i}</li>`).join('')
+            : '<li class="text-xs text-success" style="margin-inline-start: var(--space-4);">✅ No suggestions needed! Excellent fit.</li>';
+
+          container.querySelector('#modal-college-body-db').innerHTML = `
+            <p class="text-sm text-primary mb-2"><strong>${fitScore}% Fit Score</strong></p>
+            <p class="text-sm text-secondary mb-4">${matchedCollege.description}</p>
+            
+            <div class="divider"></div>
+            
+            <h5 class="text-sm font-semibold mb-2">Why Recommended?</h5>
+            <p class="text-xs text-success bg-emerald-50 p-3 rounded-lg mb-4">💡 ${reasons.join('. ') || 'Matches your dream list.'}</p>
+            
+            <h5 class="text-sm font-semibold mb-2">Programs & Strengths</h5>
+            <div class="tag-list mb-4">${strengthsHTML}</div>
+
+            <h5 class="text-sm font-semibold mb-2">Suggested Portfolio Adjustments</h5>
+            <ul class="flex flex-col gap-1 mb-4">${improvementsHTML}</ul>
+
+            <div class="divider"></div>
+            
+            <div class="grid-2 text-xs">
+              <div>📍 <strong>Location:</strong> ${matchedCollege.location}</div>
+              <div>🎓 <strong>Acceptance rate:</strong> ${matchedCollege.acceptance}</div>
+            </div>
+          `;
+          dbDialog.showModal();
+        }
+      });
+    });
+  }
 }
 
 // -------------------------------------------------------------
@@ -412,36 +791,63 @@ function getCategoryBadgeColor(cat) {
 // 3. COLLEGES MATCH / RECOMMENDATIONS TAB
 // -------------------------------------------------------------
 function renderCollegesTab(container, student, collegeMatches, triggerToast) {
+  // Filter colleges if selectedCategoryFilter is set
+  let displayedColleges = collegeMatches;
+  if (selectedCategoryFilter) {
+    const courseData = COURSE_DB[selectedCategoryFilter];
+    if (courseData) {
+      displayedColleges = collegeMatches.filter(college => {
+        const hasStrengthOverlap = college.strengths.some(s => 
+          courseData.strengths.some(cs => cs.toLowerCase() === s.toLowerCase())
+        );
+        const hasProgramOverlap = college.programs.some(p => 
+          p.toLowerCase().includes(selectedCategoryFilter.toLowerCase()) || 
+          selectedCategoryFilter.toLowerCase().includes(p.toLowerCase())
+        );
+        return hasStrengthOverlap || hasProgramOverlap;
+      });
+    }
+  }
+
   container.innerHTML = `
     <div class="animate-fade-up stagger">
-      <div class="section-header">
+      <div class="section-header flex justify-between items-center flex-wrap gap-4 mb-6">
         <div>
           <h2 class="section-title">AI College Match Discovery</h2>
           <p class="section-subtitle">Personalized options tailored to your grades, dream interests, and portfolio accomplishments.</p>
         </div>
+        <div class="flex items-center gap-2" style="background: var(--color-slate-50); padding: var(--space-2) var(--space-4); border-radius: var(--radius-xl); border: 1px solid var(--color-border);">
+          <label for="college-category-filter" class="text-xs text-secondary font-semibold">Focus Filter:</label>
+          <select id="college-category-filter" class="input select" style="width: 200px; padding: 4px 8px; font-size: 13px; min-block-size: auto; border-radius: var(--radius-md);">
+            <option value="all">All Categories</option>
+            ${Object.keys(COURSE_DB).map(catName => `
+              <option value="${catName}" ${selectedCategoryFilter === catName ? 'selected' : ''}>${catName}</option>
+            `).join('')}
+          </select>
+        </div>
       </div>
 
       <div class="grid-3">
-        ${collegeMatches.length === 0 ? `
+        ${displayedColleges.length === 0 ? `
           <div class="card" style="grid-column: 1 / -1;">
             <div class="empty-state">
               <div class="empty-icon">🏫</div>
-              <h3>No college recommendations found</h3>
-              <p>Add more details to your achievements log to kickstart recommendations.</p>
+              <h3>No matched colleges found</h3>
+              <p>No colleges found in this category matching your profile parameters. Try clearing the filter or adjusting achievements.</p>
             </div>
           </div>
-        ` : collegeMatches.map(col => {
+        ` : displayedColleges.map(col => {
           let scoreClass = 'low';
           if (col.matchScore >= 75) scoreClass = 'high';
           else if (col.matchScore >= 50) scoreClass = 'medium';
 
           return `
             <!-- Tinder-Style College Match Card -->
-            <div class="match-card">
+            <div class="match-card" style="border-radius: var(--radius-2xl);">
               <div class="match-card-header">
                 <div>
                   <span class="college-type-badge">${col.type} • ${col.country}</span>
-                  <h3 class="font-bold text-base mt-1">${col.name}</h3>
+                  <h3 class="font-bold text-base mt-1" style="color: var(--color-text);">${col.name}</h3>
                   <span class="text-xs text-muted">📍 ${col.location}</span>
                 </div>
                 <div class="match-score-pill ${scoreClass}">
@@ -463,8 +869,8 @@ function renderCollegesTab(container, student, collegeMatches, triggerToast) {
                   <span>Acceptance: <strong>${col.acceptance}</strong></span>
                 </div>
               </div>
-              <div class="card-footer">
-                <button class="btn btn-secondary btn-sm w-full btn-view-college" data-id="${col.id}">View Reasons</button>
+              <div class="card-footer" style="display: flex; justify-content: center; background: transparent; border-block-start: none; padding-block-start: 0; padding-block-end: var(--space-4);">
+                <button class="btn btn-secondary btn-sm btn-view-college" data-id="${col.id}" style="width: auto; min-width: 150px; border-radius: var(--radius-full); border: 1px solid var(--color-border);">View Reasons</button>
               </div>
             </div>
           `;
@@ -491,11 +897,19 @@ function renderCollegesTab(container, student, collegeMatches, triggerToast) {
   const dialog = container.querySelector('#dialog-college');
   const btnClose = container.querySelector('#dialog-col-close');
   const btnCancel = container.querySelector('#dialog-col-cancel');
-  // Connect options removed from student matching dashboard
   let selectedCollege = null;
 
   btnClose.addEventListener('click', () => dialog.close());
   btnCancel.addEventListener('click', () => dialog.close());
+
+  // Dropdown filter change listener
+  const categoryFilterSelect = container.querySelector('#college-category-filter');
+  if (categoryFilterSelect) {
+    categoryFilterSelect.addEventListener('change', (e) => {
+      selectedCategoryFilter = e.target.value === 'all' ? null : e.target.value;
+      renderStudentDashboard(container, 'colleges', triggerToast);
+    });
+  }
 
   container.querySelectorAll('.btn-view-college').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -535,8 +949,6 @@ function renderCollegesTab(container, student, collegeMatches, triggerToast) {
       }
     });
   });
-
-  // Connect event listeners removed
 }
 
 // -------------------------------------------------------------

@@ -84,8 +84,8 @@ function renderLogin(root) {
     <div class="login-shell animate-fade-in">
       <div class="login-hero">
         <div style="z-index: 1; max-width: 440px;">
-          <div class="logo-mark mb-4" style="background: white; color: var(--color-primary); width: 48px; height: 48px; font-size: 1.5rem;">C</div>
-          <h1 style="color: white; font-size: 2.25rem; margin-block-end: var(--space-4);">ConnectED</h1>
+          <div class="logo-mark mb-4" style="background: white; color: var(--color-primary); width: 48px; height: 48px; font-size: 1.5rem;">P</div>
+          <h1 style="color: white; font-size: 2.25rem; margin-block-end: var(--space-4);">ProfileED</h1>
           <p class="text-lg" style="color: rgb(255 255 255 / 0.9); font-weight: var(--weight-medium); margin-block-end: var(--space-4);">
             The Verified High School Portfolio & AI Matching Network
           </p>
@@ -118,7 +118,7 @@ function renderLogin(root) {
 
         <div class="flex flex-col gap-3" style="max-width: 400px;">
           <button id="btn-mock-google" class="btn btn-secondary w-full justify-center">
-            <span>🌐</span> Simulated Google OAuth Login (Aanya)
+            <span>🌐</span> Simulated Google OAuth Login (Naman)
           </button>
           <button id="btn-start-onboarding" class="btn btn-ghost w-full justify-center text-sm font-semibold">
             First time student? <strong>Get Started / Onboarding</strong>
@@ -146,8 +146,8 @@ function renderLogin(root) {
   });
 
   root.querySelector('#btn-mock-google').addEventListener('click', () => {
-    // Aanya Sharma is the default seeded student
-    const user = store.login('aanya@example.com', 'demo');
+    // Naman Goel is the default seeded student
+    const user = store.login('naman@example.com', 'demo');
     if (user) {
       currentTab = 'dashboard';
       triggerToast('Authenticated via Google OAuth.', 'success');
@@ -174,11 +174,11 @@ function renderOnboarding(root) {
         <p class="text-xs text-muted">Let's set up your profile details first.</p>
         <div class="input-group">
           <label class="input-label" for="ob-name">Full Name</label>
-          <input class="input" type="text" id="ob-name" value="${onboardingData.name}" placeholder="Aanya Sharma" required>
+          <input class="input" type="text" id="ob-name" value="${onboardingData.name}" placeholder="Naman Goel" required>
         </div>
         <div class="input-group">
           <label class="input-label" for="ob-school">High School Name</label>
-          <input class="input" type="text" id="ob-school" value="${onboardingData.school}" placeholder="Delhi Public School" required>
+          <input class="input" type="text" id="ob-school" value="${onboardingData.school}" placeholder="Government Model Senior Secondary School" required>
         </div>
         <div class="grid-2">
           <div class="input-group">
@@ -327,7 +327,7 @@ function renderOnboarding(root) {
 
       isOnboarding = false;
       currentTab = 'dashboard';
-      triggerToast('Registration complete! Welcome to ConnectED.', 'success');
+      triggerToast('Registration complete! Welcome to ProfileED.', 'success');
     }
   });
 
@@ -405,7 +405,7 @@ function renderAppShell(root, user) {
 
   // Roster profiles for quick role switcher (evaluation/judges convenience)
   const allSwitchUsers = [
-    { id: 'stu_001', name: 'Aanya (Student)', role: 'Student' },
+    { id: 'stu_001', name: 'Naman (Student)', role: 'Student' },
     { id: 'cou_001', name: 'Ms. Deepa (Counselor)', role: 'Counselor' },
     { id: 'col_001', name: 'Ashoka (University Admin)', role: 'Admissions' },
     { id: 'emp_001', name: 'Vikram (University Employee)', role: 'Admissions staff' }
@@ -429,8 +429,8 @@ function renderAppShell(root, user) {
       <!-- LEFT SIDEBAR -->
       <aside class="sidebar">
         <div class="sidebar-logo">
-          <div class="logo-mark">C</div>
-          <span class="logo-text">ConnectED</span>
+          <div class="logo-mark">P</div>
+          <span class="logo-text">ProfileED</span>
         </div>
         <nav class="sidebar-nav">
           <span class="nav-section-label">Guidance Hub</span>
