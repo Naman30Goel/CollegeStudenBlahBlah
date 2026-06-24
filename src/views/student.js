@@ -174,28 +174,59 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
         </div>
       </div>
 
-      <!-- COURSE RECOMMENDATIONS -->
-      <div class="card mb-6">
-        <div class="card-header">
-          <h3 class="font-bold flex items-center gap-2"><span>📚</span> AI Suggested Degree Programs</h3>
-          <span class="text-xs text-muted">Based on your skills & achievements</span>
+      <!-- DREAM COLLEGES & COURSE RECOMMENDATIONS GRID -->
+      <div class="grid-3 mb-6">
+        <!-- DREAM COLLEGES CARD -->
+        <div class="card" style="display: flex; flex-direction: column;">
+          <div class="card-header">
+            <h3 class="font-bold flex items-center gap-2"><span>🏫</span> My Dream Colleges</h3>
+          </div>
+          <div class="card-body flex-1 flex flex-col gap-1">
+            ${(student.dreamColleges || []).length === 0 ? `
+              <div class="text-center text-muted text-xs p-4">No dream colleges added to your profile.</div>
+            ` : (student.dreamColleges || []).map(dcName => {
+              const match = colleges.find(c => c.name.toLowerCase().includes(dcName.toLowerCase()) || dcName.toLowerCase().includes(c.name.toLowerCase()));
+              const matchScoreHTML = match 
+                ? `<span class="badge badge-emerald">${match.matchScore}% Fit</span>` 
+                : `<span class="badge badge-slate">Calculating</span>`;
+              return `
+                <div class="flex items-center justify-between pb-3" style="border-block-end: 1px solid var(--color-border); margin-block-end: var(--space-3);">
+                  <div class="flex items-center gap-2" style="min-width: 0;">
+                    <span style="font-size: 1.25rem; flex-shrink: 0;">🏛️</span>
+                    <div style="min-width: 0;">
+                      <h5 class="text-sm font-semibold truncate" style="max-width: 130px;">${dcName}</h5>
+                    </div>
+                  </div>
+                  ${matchScoreHTML}
+                </div>
+              `;
+            }).join('')}
+          </div>
         </div>
-        <div class="card-body">
-          <div class="grid-4">
-            ${courses.map(course => `
-              <div class="course-card">
-                <div class="course-icon">${course.icon}</div>
-                <h4 class="font-bold text-base mt-2">${course.name}</h4>
-                <p class="text-xs text-secondary mt-1 flex-1">${course.description}</p>
-                <div class="course-skills-list mt-2">
-                  ${course.skills.slice(0, 3).map(skill => `<span class="badge badge-slate">${skill}</span>`).join('')}
+
+        <!-- COURSE RECOMMENDATIONS -->
+        <div class="card" style="grid-column: span 2;">
+          <div class="card-header">
+            <h3 class="font-bold flex items-center gap-2"><span>📚</span> AI Suggested Degree Programs</h3>
+            <span class="text-xs text-muted">Based on your skills & achievements</span>
+          </div>
+          <div class="card-body">
+            <div class="grid-2">
+              ${courses.map(course => `
+                <div class="course-card">
+                  <div class="course-icon">${course.icon}</div>
+                  <h4 class="font-bold text-base mt-2">${course.name}</h4>
+                  <p class="text-xs text-secondary mt-1 flex-1">${course.description}</p>
+                  <div class="course-skills-list mt-2">
+                    ${course.skills.slice(0, 3).map(skill => `<span class="badge badge-slate">${skill}</span>`).join('')}
+                  </div>
+                  <div style="margin-block-start: var(--space-4); display: flex; align-items: center; justify-content: space-between;">
+                    <span class="text-xs font-semibold text-primary">Match score</span>
+                    <span class="badge badge-emerald">${course.matchScore}% Match</span>
+                  </div>
                 </div>
-                <div style="margin-block-start: var(--space-4); display: flex; align-items: center; justify-content: space-between;">
-                  <span class="text-xs font-semibold text-primary">Match score</span>
-                  <span class="badge badge-emerald">${course.matchScore}% Match</span>
-                </div>
-              </div>
-            `).join('')}
+              `).join('')}
+            </div>
           </div>
         </div>
       </div>
@@ -412,9 +443,8 @@ function renderCollegesTab(container, student, collegeMatches, triggerToast) {
                   <span>Acceptance: <strong>${col.acceptance}</strong></span>
                 </div>
               </div>
-              <div class="card-footer flex justify-between gap-2">
-                <button class="btn btn-ghost btn-sm flex-1 btn-view-college" data-id="${col.id}">View Reasons</button>
-                <button class="btn btn-primary btn-sm flex-1 btn-approve-match" data-id="${col.id}">Connect</button>
+              <div class="card-footer">
+                <button class="btn btn-secondary btn-sm w-full btn-view-college" data-id="${col.id}">View Reasons</button>
               </div>
             </div>
           `;
@@ -432,7 +462,6 @@ function renderCollegesTab(container, student, collegeMatches, triggerToast) {
         </div>
         <div class="dialog-footer">
           <button id="dialog-col-cancel" class="btn btn-ghost">Close</button>
-          <button id="dialog-col-connect" class="btn btn-primary">Send Interest Request</button>
         </div>
       </dialog>
     </div>
@@ -442,7 +471,7 @@ function renderCollegesTab(container, student, collegeMatches, triggerToast) {
   const dialog = container.querySelector('#dialog-college');
   const btnClose = container.querySelector('#dialog-col-close');
   const btnCancel = container.querySelector('#dialog-col-cancel');
-  const btnConnect = container.querySelector('#dialog-col-connect');
+  // Connect options removed from student matching dashboard
   let selectedCollege = null;
 
   btnClose.addEventListener('click', () => dialog.close());
@@ -487,24 +516,7 @@ function renderCollegesTab(container, student, collegeMatches, triggerToast) {
     });
   });
 
-  container.querySelectorAll('.btn-approve-match').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const colId = btn.getAttribute('data-id');
-      const col = collegeMatches.find(c => c.id === colId);
-      if (col) {
-        store.sendContactRequest(col.id, student.id, 'brochure', `Student ${student.name} expressed interest in ${col.name}.`);
-        triggerToast(`Interest shared! Admissions team at ${col.name} can now contact you.`, 'success');
-      }
-    });
-  });
-
-  btnConnect.addEventListener('click', () => {
-    if (selectedCollege) {
-      store.sendContactRequest(selectedCollege.id, student.id, 'brochure', `Student ${student.name} expressed interest in ${selectedCollege.name}.`);
-      dialog.close();
-      triggerToast(`Interest shared with ${selectedCollege.name}!`, 'success');
-    }
-  });
+  // Connect event listeners removed
 }
 
 // -------------------------------------------------------------
