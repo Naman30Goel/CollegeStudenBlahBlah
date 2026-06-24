@@ -35,8 +35,6 @@ export function renderStudentDashboard(container, activeTab, triggerToast) {
 }
 
 // -------------------------------------------------------------
-// 1. DASHBOARD TAB
-// -------------------------------------------------------------
 function renderDashboardTab(container, student, score, breakdown, colleges, courses, feedback, approvedCount, pendingCount, triggerToast) {
   // Determine circular badge color
   let scoreColorClass = 'low';
@@ -50,69 +48,69 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
 
   container.innerHTML = `
     <div class="animate-fade-up stagger">
-      <!-- LINKEDIN-STYLE STUDENT PROFILE HEADER -->
-      <div class="card linkedin-profile-header mb-6" style="padding: 0; overflow: hidden; position: relative; border-radius: var(--radius-2xl);">
-        <div class="profile-cover-banner" style="height: 160px; background: linear-gradient(135deg, #1f4068 0%, #162447 50%, #1b1b2f 100%); position: relative;">
-          <div style="position: absolute; right: var(--space-4); top: var(--space-4); background: rgb(255 255 255 / 0.15); backdrop-filter: blur(4px); padding: 4px 12px; border-radius: var(--radius-full); color: white; font-size: 10px; font-weight: bold; letter-spacing: 1px;">
-            ProfileED CERTIFIED
-          </div>
-        </div>
-        <div class="profile-info-section" style="padding: var(--space-4) var(--space-6); position: relative; margin-top: -60px;">
-          <!-- Avatar overlapping the cover -->
-          <div class="profile-avatar-container" style="position: relative; display: inline-block;">
-            <div class="avatar font-bold" style="width: 120px; height: 120px; font-size: 2.5rem; border: 4px solid var(--color-bg); background-color: var(--color-primary); color: white; box-shadow: var(--shadow-md); border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+      <!-- SAAS PROFILE CONSOLE HEADER -->
+      <div class="card profile-console-header mb-6 animate-fade-in" style="background: linear-gradient(135deg, var(--color-primary-hover) 0%, var(--color-primary) 100%); border: none; padding: var(--space-6); color: white; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4); border-radius: var(--radius-2xl); position: relative; overflow: hidden; box-shadow: var(--shadow-lg);">
+        <div style="position: absolute; right: -50px; top: -50px; width: 200px; height: 200px; border-radius: 50%; background: rgb(255 255 255 / 0.05); pointer-events: none;"></div>
+        <div style="position: absolute; left: -30px; bottom: -30px; width: 120px; height: 120px; border-radius: 50%; background: rgb(255 255 255 / 0.03); pointer-events: none;"></div>
+
+        <div class="flex items-center gap-5 flex-wrap" style="flex: 1; min-width: 280px; z-index: 1;">
+          <!-- Glowing ring avatar -->
+          <div style="position: relative;">
+            <svg style="width: 106px; height: 106px; transform: rotate(-90deg); position: absolute; top: -5px; left: -5px; pointer-events: none;">
+              <circle cx="53" cy="53" r="49" stroke="rgb(255 255 255 / 0.15)" stroke-width="4" fill="transparent"></circle>
+              <circle cx="53" cy="53" r="49" stroke="#10b981" stroke-width="4" fill="transparent" stroke-dasharray="307.8" stroke-dashoffset="${307.8 - (307.8 * score) / 100}" style="transition: stroke-dashoffset 0.5s ease;"></circle>
+            </svg>
+            <div class="avatar font-bold" style="width: 96px; height: 96px; border-radius: 50%; border: 3px solid white; background: var(--color-slate-100); color: var(--color-primary); font-size: 2.25rem; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md);">
               ${student.avatar ? `<img src="${student.avatar}" alt="${student.name}" style="width: 100%; height: 100%; object-fit: cover;">` : initials}
             </div>
-            <!-- Verification badge -->
-            <div style="position: absolute; bottom: 8px; right: 8px; background: var(--color-success); border: 2px solid var(--color-bg); width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold;" title="Profile Audited">✓</div>
+            <div style="position: absolute; bottom: 0; right: 0; background: #10b981; border: 2px solid white; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; font-weight: bold;" title="Audited Portfolio">✓</div>
           </div>
           
-          <div class="flex justify-between items-start flex-wrap mt-3 gap-4">
-            <div style="flex: 1; min-width: 250px;">
-              <div class="flex items-center gap-2 flex-wrap">
-                <h1 class="text-2xl font-extrabold" style="margin: 0; color: var(--color-text);">${student.name}</h1>
-                <span class="badge badge-indigo flex items-center gap-1" style="font-size: 10px; padding: 2px 8px; cursor: pointer;" id="btn-verify-top">
-                  <span>⚡</span> Verify in 2 minutes
-                </span>
-              </div>
-              <p class="text-base text-secondary font-medium mt-1" style="line-height: 1.3;">
-                ${student.careerInterests.slice(0, 4).join(' | ')} | ${student.school} | Grade ${student.grade}
-              </p>
-              <p class="text-xs text-muted mt-2">
-                📍 ${student.city}, India • <a href="#" id="lnk-contact-info" class="text-primary font-semibold hover-underline" style="text-decoration: none;">Contact info</a> • <span class="font-semibold text-primary">500+ connections</span>
-              </p>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <h1 class="text-2xl font-extrabold" style="margin: 0; color: white; letter-spacing: -0.5px;">${student.name}</h1>
+              <span class="badge" style="background: rgb(255 255 255 / 0.2); color: white; font-size: 10px; padding: 2px 8px; border-radius: var(--radius-full); font-weight: 600; backdrop-filter: blur(4px);">Grade ${student.grade}</span>
             </div>
-            
-            <div class="flex flex-col gap-2 align-end text-end" style="font-size: var(--text-sm);">
-              <div class="flex items-center gap-2 justify-end" style="color: var(--color-text);">
-                <span style="font-size: 1.25rem;">🏛️</span>
-                <span class="font-bold text-secondary text-sm">${student.school}</span>
-              </div>
+            <p class="text-sm mt-1" style="color: rgb(255 255 255 / 0.9); font-weight: 500;">
+              🎓 Intended Major: <span style="font-weight: 700;">${student.intendedDegree}</span>
+            </p>
+            <div class="flex flex-wrap gap-1 mt-3">
+              ${student.careerInterests.map(interest => `
+                <span style="font-size: 9px; font-weight: bold; padding: 3px 10px; background: rgb(255 255 255 / 0.12); color: white; border-radius: var(--radius-full); backdrop-filter: blur(4px); text-transform: uppercase; border: 1px solid rgb(255 255 255 / 0.05); letter-spacing: 0.5px;">
+                  ${interest}
+                </span>
+              `).join('')}
             </div>
           </div>
+        </div>
 
-          <div class="flex gap-2 mt-4 flex-wrap">
-            <button class="btn btn-primary btn-sm btn-open-colleges" style="border-radius: var(--radius-full);">Open to Colleges</button>
-            <button class="btn btn-secondary btn-sm btn-enhance-profile" style="border-radius: var(--radius-full); border: 1px solid var(--color-border);">Enhance Profile</button>
-            <button class="btn btn-ghost btn-sm btn-icon" style="border-radius: 50%; border: 1px solid var(--color-border); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">•••</button>
+        <div class="flex flex-col gap-2 justify-end items-end text-end flex-wrap" style="z-index: 1;">
+          <span class="text-xs font-semibold" style="color: rgb(255 255 255 / 0.85); letter-spacing: 0.5px;">📍 ${student.city}, India</span>
+          <div class="flex gap-2 mt-2">
+            <button class="btn btn-secondary btn-sm btn-open-colleges" style="border-radius: var(--radius-lg); background: white; color: var(--color-primary); border: none; font-weight: bold; font-size: 12px; box-shadow: var(--shadow-sm); padding-inline: var(--space-4);">
+              Open to Colleges
+            </button>
+            <button id="lnk-contact-info" class="btn btn-secondary btn-sm" style="border-radius: var(--radius-lg); background: rgb(255 255 255 / 0.15); color: white; border: 1px solid rgb(255 255 255 / 0.1); font-weight: 600; font-size: 12px; backdrop-filter: blur(4px);">
+              View Socials
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- TWO COLUMN LAYOUT -->
+      <!-- SAAS PROFILE GRID WORKSPACE -->
       <div class="grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-6); align-items: start;">
-        <!-- LEFT COLUMN: MAIN FEED -->
+        
+        <!-- LEFT WORKSPACE AREA -->
         <div class="flex flex-col gap-6" style="min-width: 0;">
-          <!-- SUGGESTED FOR YOU (AI Insights) -->
+          
+          <!-- SYSTEM STRATEGY & ACTIONS (AI Recommendations checklist) -->
           <div class="card" style="padding: var(--space-5); border-radius: var(--radius-2xl);">
-            <div class="flex justify-between items-center mb-2">
-              <h3 class="font-bold" style="font-size: var(--text-base); margin: 0;">Suggested for you</h3>
-              <span class="text-xs text-muted">Intermediate Profile Strength</span>
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="font-bold flex items-center gap-2" style="font-size: var(--text-base); margin: 0;">
+                <span>✨</span> AI Strategic Action Center
+              </h3>
+              <span class="badge badge-indigo" style="font-size: 10px;">Growth Focus</span>
             </div>
-            <div style="background-color: var(--color-slate-100); border-radius: var(--radius-full); height: 8px; width: 100%; margin-block-end: var(--space-3); overflow: hidden;">
-              <div style="width: 70%; background-color: var(--color-primary); height: 100%; border-radius: var(--radius-full);"></div>
-            </div>
-            <p class="text-xs text-muted mb-4">Complete these recommended actions to increase your Dream College readiness by 24%.</p>
             
             <div class="flex flex-col gap-3">
               ${feedback.map(item => {
@@ -142,65 +140,87 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
                 }
 
                 return `
-                  <div class="feedback-item ${item.type} p-3 rounded-lg flex items-start gap-3" style="border: 1px solid var(--color-border); margin: 0; background: var(--color-slate-50);">
-                    <span style="font-size: 1.25rem; flex-shrink: 0; margin-top: 2px;">
-                      ${item.type === 'success' ? '🚀' : item.type === 'warning' ? '✍️' : '💡'}
-                    </span>
-                    <div style="flex: 1; min-width: 0;">
-                      <h4 class="text-sm font-semibold" style="margin: 0; color: var(--color-text);">${taskTitle}</h4>
-                      <p class="text-xs text-secondary mt-1" style="line-height: 1.3;">${item.text}</p>
-                      <button class="btn btn-secondary btn-sm mt-3 btn-suggestion-action" data-target="${actionTarget}" style="border: 1px solid var(--color-border); border-radius: var(--radius-full); padding: 2px 12px; font-size: 11px;">
-                        ${actionText}
-                      </button>
+                  <div class="feedback-item ${item.type} p-3 rounded-lg flex items-center justify-between gap-4" style="border: 1px solid var(--color-border); margin: 0; background: var(--color-slate-50);">
+                    <div class="flex items-start gap-3" style="min-width: 0; flex: 1;">
+                      <span style="font-size: 1.25rem; flex-shrink: 0; margin-top: 2px;">
+                        ${item.type === 'success' ? '🚀' : item.type === 'warning' ? '✍️' : '💡'}
+                      </span>
+                      <div style="min-width: 0; flex: 1;">
+                        <h4 class="text-sm font-bold" style="margin: 0; color: var(--color-text);">${taskTitle}</h4>
+                        <p class="text-xs text-secondary mt-0.5 truncate" style="max-width: 420px;">${item.text}</p>
+                      </div>
                     </div>
+                    <button class="btn btn-secondary btn-sm btn-suggestion-action" data-target="${actionTarget}" style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 4px 12px; font-size: 11px; flex-shrink: 0;">
+                      ${actionText}
+                    </button>
                   </div>
                 `;
               }).join('')}
             </div>
           </div>
 
-          <!-- ANALYTICS SECTION -->
+          <!-- ANALYTICS INSIGHTS -->
           <div class="card" style="padding: var(--space-5); border-radius: var(--radius-2xl);">
-            <div class="flex flex-col gap-1 mb-4">
-              <h3 class="font-bold flex items-center gap-2" style="font-size: var(--text-base); margin: 0;">
-                Analytics
-              </h3>
-              <span class="text-xs text-muted flex items-center gap-1">🔒 Private to you</span>
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <h3 class="font-bold flex items-center gap-2" style="font-size: var(--text-base); margin: 0;">
+                  Platform Analytics
+                </h3>
+                <span class="text-xs text-muted">Audited reach and discoverability metrics</span>
+              </div>
+              <span class="badge badge-slate" style="font-size: 10px;">Real-time</span>
             </div>
-            <div class="grid-3 text-start">
-              <div class="analytics-stat-card p-3 rounded-lg hover-bg" style="cursor: pointer; border: 1px solid var(--color-border); transition: all var(--transition-fast);" data-nav="interested">
-                <div class="text-2xl font-extrabold text-primary" style="line-height: 1;">394</div>
-                <div class="text-xs font-semibold mt-1" style="color: var(--color-text);">profile views</div>
-                <div class="text-xs text-muted mt-1" style="font-size: 10px;">Discover which colleges viewed your profile.</div>
+            
+            <div class="grid-3 text-start" style="gap: var(--space-4);">
+              <div class="analytics-stat-card p-4 rounded-xl hover-bg" style="cursor: pointer; border: 1px solid var(--color-border); background: var(--color-slate-50); transition: all var(--transition-fast);" data-nav="interested">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs text-muted font-bold">PROFILE VIEWS</span>
+                  <span>👁️</span>
+                </div>
+                <div class="text-3xl font-black mt-2 text-primary" style="letter-spacing: -0.5px;">394</div>
+                <div class="text-xs text-secondary mt-1">Colleges that viewed your profile folder</div>
               </div>
-              <div class="analytics-stat-card p-3 rounded-lg hover-bg" style="cursor: pointer; border: 1px solid var(--color-border); transition: all var(--transition-fast);" data-nav="achievements">
-                <div class="text-2xl font-extrabold text-success" style="line-height: 1;">104</div>
-                <div class="text-xs font-semibold mt-1" style="color: var(--color-text);">post impressions</div>
-                <div class="text-xs text-muted mt-1" style="font-size: 10px;">Check out who's engaging with your portfolio.</div>
+              <div class="analytics-stat-card p-4 rounded-xl hover-bg" style="cursor: pointer; border: 1px solid var(--color-border); background: var(--color-slate-50); transition: all var(--transition-fast);" data-nav="achievements">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs text-muted font-bold">PORTFOLIO REACH</span>
+                  <span>📈</span>
+                </div>
+                <div class="text-3xl font-black mt-2 text-success" style="letter-spacing: -0.5px;">104</div>
+                <div class="text-xs text-secondary mt-1">Impressions on credential postings</div>
               </div>
-              <div class="analytics-stat-card p-3 rounded-lg hover-bg" style="cursor: pointer; border: 1px solid var(--color-border); transition: all var(--transition-fast);" data-nav="matches">
-                <div class="text-2xl font-extrabold text-indigo" style="line-height: 1;">72</div>
-                <div class="text-xs font-semibold mt-1" style="color: var(--color-text);">search appearances</div>
-                <div class="text-xs text-muted mt-1" style="font-size: 10px;">See how often you appear in college queries.</div>
+              <div class="analytics-stat-card p-4 rounded-xl hover-bg" style="cursor: pointer; border: 1px solid var(--color-border); background: var(--color-slate-50); transition: all var(--transition-fast);" data-nav="matches">
+                <div class="flex justify-between items-center">
+                  <span class="text-xs text-muted font-bold">SEARCH APPEARANCES</span>
+                  <span>🔍</span>
+                </div>
+                <div class="text-3xl font-black mt-2 text-indigo" style="letter-spacing: -0.5px;">72</div>
+                <div class="text-xs text-secondary mt-1">Found in search queries by advisors</div>
               </div>
             </div>
           </div>
 
-          <!-- COURSE RECOMMENDATIONS -->
+          <!-- DEGREE PATHWAY SUGGESTIONS -->
           <div class="card" style="border-radius: var(--radius-2xl);">
             <div class="card-header flex justify-between items-center flex-wrap gap-2">
-              <h3 class="font-bold flex items-center gap-2"><span>📚</span> AI Suggested Degree Programs</h3>
+              <div>
+                <h3 class="font-bold flex items-center gap-2" style="margin: 0;">📚 AI Suggested Degree Programs</h3>
+                <p class="text-xs text-muted mt-0.5">Recommendations mapped based on interest overlap and skill set alignment</p>
+              </div>
               <button id="btn-show-colleges" class="btn btn-secondary btn-sm">Show All Matches</button>
             </div>
             <div class="card-body">
               <div class="grid-2">
                 ${courses.map(course => `
-                  <div class="course-card" style="display: flex; flex-direction: column; justify-content: justify; height: 100%;">
-                    <div class="course-icon">${course.icon}</div>
-                    <h4 class="font-bold text-base mt-2">${course.name}</h4>
-                    <p class="text-xs text-secondary mt-1 flex-1">${course.description}</p>
-                    <div class="course-skills-list mt-2">
-                      ${course.skills.slice(0, 3).map(skill => `<span class="badge badge-slate">${skill}</span>`).join('')}
+                  <div class="course-card" style="display: flex; flex-direction: column; justify-content: space-between; border-radius: var(--radius-xl); background: var(--color-bg); border: 1px solid var(--color-border); padding: var(--space-4); height: 100%;">
+                    <div>
+                      <div class="course-icon" style="background: var(--color-slate-50); border: 1px solid var(--color-border); width: 40px; height: 40px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                        ${course.icon}
+                      </div>
+                      <h4 class="font-bold text-base mt-2" style="color: var(--color-text);">${course.name}</h4>
+                      <p class="text-xs text-secondary mt-1" style="line-height: 1.3;">${course.description}</p>
+                      <div class="course-skills-list mt-2">
+                        ${course.skills.slice(0, 3).map(skill => `<span class="badge badge-slate" style="font-size: 9px;">${skill}</span>`).join('')}
+                      </div>
                     </div>
                     <div style="margin-block-start: var(--space-4); display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); flex-wrap: wrap;">
                       <span class="badge badge-emerald">${course.matchScore}% Match</span>
@@ -212,58 +232,21 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
             </div>
           </div>
 
-          <!-- MY DREAM COLLEGES CARD -->
-          <div class="card" style="display: flex; flex-direction: column; border-radius: var(--radius-2xl);">
-            <div class="card-header">
-              <h3 class="font-bold flex items-center gap-2"><span>🏫</span> My Dream Colleges</h3>
-            </div>
-            <div class="card-body flex-1 flex flex-col gap-1">
-              ${(student.dreamColleges || []).length === 0 ? `
-                <div class="text-center text-muted text-xs p-4">No dream colleges added to your profile.</div>
-              ` : (student.dreamColleges || []).map(dcName => {
-                const match = store.state.colleges.find(c => c.name.toLowerCase().includes(dcName.toLowerCase()) || dcName.toLowerCase().includes(c.name.toLowerCase()));
-                const fitPercent = match ? calculateCollegeMatch(student, match) : Math.min(100, Math.round((student.grades?.gpa || 0) * 8 + student.achievements.length * 5));
-                const matchScoreHTML = `<span class="badge badge-emerald" style="flex-shrink: 0;">${fitPercent}% Fit</span>`;
-                return `
-                  <div class="flex items-center justify-between pb-3" style="border-block-end: 1px solid var(--color-border); margin-block-end: var(--space-3); gap: var(--space-3);">
-                    <div class="flex items-center gap-2" style="min-width: 0; flex: 1;">
-                      <span style="font-size: 1.25rem; flex-shrink: 0;">🏛️</span>
-                      <div style="min-width: 0; flex: 1;">
-                        <h5 class="text-sm font-semibold truncate" style="margin: 0;">${dcName}</h5>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-2" style="flex-shrink: 0;">
-                      ${matchScoreHTML}
-                      ${match ? `
-                        <button class="btn btn-ghost btn-sm btn-view-dream-college" data-id="${match.id}" style="padding: 2px 8px; font-size: 11px; font-weight: bold; border: 1px solid var(--color-border); border-radius: var(--radius-md);">View</button>
-                      ` : ''}
-                      <button class="btn-remove-dream-college btn-ghost btn-icon btn-sm text-error" data-name="${dcName}" title="Remove from dreams" style="padding: 2px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;">✕</button>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-              
-              <!-- Inline Add Dream College Form -->
-              <div style="margin-block-start: var(--space-4); padding-block-start: var(--space-4); border-block-start: 1px dashed var(--color-border);">
-                <form id="form-add-dream-college" class="flex gap-2">
-                  <input type="text" id="add-dc-name" class="input" placeholder="Add another dream college (e.g. Stanford)..." style="font-size: 12px; padding: 6px 12px; flex: 1;" required autocomplete="off">
-                  <button type="submit" class="btn btn-primary btn-sm" style="padding: 6px 12px; font-size: 12px; border-radius: var(--radius-lg);">Add College</button>
-                </form>
-              </div>
-            </div>
-          </div>
-
-          <!-- LINKEDIN-STYLE EXPERIENCE SECTION -->
+          <!-- VERIFIED PORTFOLIO TIMELINE -->
           <div class="card" style="padding: var(--space-5); border-radius: var(--radius-2xl);">
             <div class="flex justify-between items-center mb-4">
-              <h3 class="font-bold flex items-center gap-2" style="font-size: var(--text-base); margin: 0;">
-                Experience & Portfolio accomplishments
-              </h3>
+              <div>
+                <h3 class="font-bold flex items-center gap-2" style="font-size: var(--text-base); margin: 0;">
+                  Verified Accomplishments Timeline
+                </h3>
+                <p class="text-xs text-muted">Audited milestones submitted to the platform</p>
+              </div>
               <button class="btn btn-ghost btn-sm btn-enhance-profile" style="color: var(--color-primary); font-weight: bold; font-size: var(--text-sm);">
-                View All Log
+                View Full Log
               </button>
             </div>
-            <div class="flex flex-col gap-4">
+            
+            <div style="position: relative; padding-inline-start: var(--space-6); border-inline-start: 2px solid var(--color-border); margin-inline-start: var(--space-2); display: flex; flex-direction: column; gap: var(--space-6);">
               ${student.achievements.slice(0, 3).map(ach => {
                 let achIcon = '📜';
                 if (ach.category === 'Olympiads') achIcon = '🏆';
@@ -273,15 +256,22 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
                 else if (ach.category === 'Internships') achIcon = '💼';
 
                 return `
-                  <div class="flex items-start gap-3 pb-4" style="border-block-end: 1px solid var(--color-border); margin-block-end: var(--space-2); &:last-child { border-block-end: none; margin-block-end: 0; }">
-                    <div style="font-size: 1.5rem; background-color: var(--color-slate-50); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-lg); flex-shrink: 0; border: 1px solid var(--color-border);">
-                      ${achIcon}
-                    </div>
-                    <div style="flex: 1; min-width: 0;">
-                      <h4 class="text-sm font-bold" style="margin: 0; color: var(--color-text);">${ach.title}</h4>
-                      <p class="text-xs font-semibold text-secondary mt-1">${ach.category} • ${student.school}</p>
-                      <p class="text-xs text-muted mt-1">📅 ${ach.date}</p>
-                      <p class="text-xs text-secondary mt-2" style="line-height: 1.3;">${ach.description}</p>
+                  <div style="position: relative;">
+                    <!-- Timeline dot -->
+                    <div style="position: absolute; left: calc(-1 * var(--space-6) - 7px); top: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-primary); border: 2px solid white; box-shadow: var(--shadow-sm);"></div>
+                    
+                    <div class="flex items-start gap-3">
+                      <div style="font-size: 1.25rem; background-color: var(--color-slate-50); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); flex-shrink: 0; border: 1px solid var(--color-border);">
+                        ${achIcon}
+                      </div>
+                      <div style="flex: 1; min-width: 0;">
+                        <div class="flex items-center justify-between gap-2 flex-wrap">
+                          <h4 class="text-sm font-bold" style="margin: 0; color: var(--color-text);">${ach.title}</h4>
+                          <span class="text-xs text-muted">📅 ${ach.date}</span>
+                        </div>
+                        <p class="text-xs font-semibold text-secondary mt-0.5">${ach.category} • Verified credential</p>
+                        <p class="text-xs text-secondary mt-1.5" style="line-height: 1.3;">${ach.description}</p>
+                      </div>
                     </div>
                   </div>
                 `;
@@ -290,11 +280,12 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
           </div>
         </div>
 
-        <!-- RIGHT COLUMN: SIDEBAR -->
+        <!-- RIGHT WORKSPACE AREA: SIDEBAR -->
         <div class="flex flex-col gap-6">
-          <!-- PROFILE STRENGTH RING WIDGET -->
-          <div class="strength-widget" style="margin: 0; border-radius: var(--radius-2xl);">
-            <h3 class="font-bold text-center" style="font-size: var(--text-base);">Dream College Readiness</h3>
+          
+          <!-- PROFILE READINESS INDEX -->
+          <div class="strength-widget" style="margin: 0; border-radius: var(--radius-2xl); padding: var(--space-5);">
+            <h3 class="font-bold text-center" style="font-size: var(--text-base);">Target Readiness Index</h3>
             <div class="strength-ring">
               <svg>
                 <circle class="strength-ring-track" cx="70" cy="70" r="55"></circle>
@@ -321,9 +312,48 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
             </div>
           </div>
 
-          <!-- PEOPLE YOU MAY KNOW -->
+          <!-- DREAM TARGETS LEDGER -->
+          <div class="card" style="display: flex; flex-direction: column; border-radius: var(--radius-2xl); padding: var(--space-4);">
+            <h3 class="font-bold text-sm mb-3" style="margin: 0;">Dream Targets Ledger</h3>
+            <p class="text-xs text-muted mb-3">Colleges earmarked as primary target outcomes</p>
+            
+            <div class="flex flex-col gap-2">
+              ${(student.dreamColleges || []).length === 0 ? `
+                <div class="text-center text-muted text-xs p-4">No dream targets set.</div>
+              ` : (student.dreamColleges || []).map(dcName => {
+                const match = store.state.colleges.find(c => c.name.toLowerCase().includes(dcName.toLowerCase()) || dcName.toLowerCase().includes(c.name.toLowerCase()));
+                const fitPercent = match ? calculateCollegeMatch(student, match) : Math.min(100, Math.round((student.grades?.gpa || 0) * 8 + student.achievements.length * 5));
+                const matchScoreHTML = `<span class="badge badge-emerald" style="flex-shrink: 0; font-size: 9px; padding: 2px 6px;">${fitPercent}% Fit</span>`;
+                return `
+                  <div class="flex items-center justify-between pb-2" style="border-block-end: 1px solid var(--color-border); margin-block-end: var(--space-2); gap: var(--space-2); &:last-child { border-block-end: none; margin-block-end: 0; }">
+                    <div class="flex items-center gap-2" style="min-width: 0; flex: 1;">
+                      <span style="font-size: 1.1rem; flex-shrink: 0;">🏛️</span>
+                      <h5 class="text-xs font-semibold truncate" style="margin: 0;">${dcName}</h5>
+                    </div>
+                    <div class="flex items-center gap-1" style="flex-shrink: 0;">
+                      ${matchScoreHTML}
+                      ${match ? `
+                        <button class="btn btn-ghost btn-sm btn-view-dream-college" data-id="${match.id}" style="padding: 2px 6px; font-size: 10px; font-weight: bold; border: 1px solid var(--color-border); border-radius: var(--radius-md); height: 22px; min-block-size: auto;">View</button>
+                      ` : ''}
+                      <button class="btn-remove-dream-college btn-ghost btn-icon btn-sm text-error" data-name="${dcName}" title="Remove target" style="padding: 2px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 10px;">✕</button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+              
+              <!-- Inline Add Form -->
+              <div style="margin-block-start: var(--space-2); padding-block-start: var(--space-3); border-block-start: 1px dashed var(--color-border);">
+                <form id="form-add-dream-college" class="flex gap-2">
+                  <input type="text" id="add-dc-name" class="input" placeholder="Add target college..." style="font-size: 11px; padding: 4px 8px; flex: 1; min-block-size: auto;" required autocomplete="off">
+                  <button type="submit" class="btn btn-primary btn-sm" style="padding: 4px 8px; font-size: 11px; min-block-size: auto; height: 26px; border-radius: var(--radius-md);">Add</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONNECTIONS DISCOVERY -->
           <div class="card" style="padding: var(--space-4); border-radius: var(--radius-2xl);">
-            <h3 class="font-bold text-sm mb-3" style="margin: 0;">People you may know</h3>
+            <h3 class="font-bold text-sm mb-3" style="margin: 0;">Peer Community Discovery</h3>
             <div class="flex flex-col gap-3">
               ${store.state.students.filter(s => s.id !== student.id).slice(0, 3).map(s => {
                 const isFollowing = student.following.includes(s.id);
@@ -347,9 +377,9 @@ function renderDashboardTab(container, student, score, breakdown, colleges, cour
             </div>
           </div>
 
-          <!-- COLLEGES INTERESTED (Admissions channels) -->
+          <!-- COLLEGES INTERESTED -->
           <div class="card" style="padding: var(--space-4); border-radius: var(--radius-2xl);">
-            <h3 class="font-bold text-sm mb-3" style="margin: 0;">Colleges Interested</h3>
+            <h3 class="font-bold text-sm mb-3" style="margin: 0;">Admissions Inquiries</h3>
             <div class="flex flex-col gap-3">
               ${store.state.communications.filter(c => c.toStudentId === student.id).map(c => {
                 const col = store.state.colleges.find(col => col.id === c.fromCollegeId);
