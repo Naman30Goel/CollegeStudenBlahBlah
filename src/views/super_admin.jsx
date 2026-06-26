@@ -155,13 +155,13 @@ export default function SuperAdminWorkspace({ triggerToast }) {
   };
 
   return (
-    <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-fade-up font-sans text-left text-[#001d11] bg-[#fefbdb]/20 min-h-screen relative">
+    <div className="p-8 lg:p-12 max-w-7xl mx-auto space-y-10 animate-fade-up font-sans text-left text-[#181819] bg-[#FCF5EB]/20 min-h-screen relative">
       
       {/* Header section with Premium Light Styling */}
-      <div className="flex justify-between items-center flex-wrap gap-6 border-b border-[#001d11]/10 pb-6">
+      <div className="flex justify-between items-center flex-wrap gap-6 border-b border-[#DBB092]/20 pb-6">
         <div>
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-[10px] font-bold text-[#51652a] uppercase tracking-widest font-label bg-[#d3eca2]/30 px-3 py-1 rounded-full border border-[#d3eca2]">
+            <span className="text-[10px] font-bold text-[#4C7397] uppercase tracking-widest font-label bg-[#EDCEAF]/40 px-3 py-1 rounded-full border border-[#DBB092]">
               Super Admin Control Panel
             </span>
             
@@ -177,7 +177,7 @@ export default function SuperAdminWorkspace({ triggerToast }) {
               {dbSource === 'supabase' ? 'Supabase Connected' : 'Local Storage Mode'}
             </div>
           </div>
-          <h2 className="text-3xl font-extrabold text-[#001d11] tracking-tight mt-2.5">Waitlist Database</h2>
+          <h2 className="text-3xl font-extrabold text-[#4C7397] tracking-tight mt-2.5">Waitlist Database</h2>
           <p className="text-xs text-on-surface-variant font-light mt-1 font-label">
             Real-time management of pre-registered sign-ups directly connected to your database backend.
           </p>
@@ -187,7 +187,7 @@ export default function SuperAdminWorkspace({ triggerToast }) {
           <button
             onClick={fetchData}
             disabled={isLoading}
-            className="bg-[#51652a]/10 hover:bg-[#51652a]/20 text-[#51652a] text-xs font-bold px-4 py-2.5 rounded-full transition-all cursor-pointer flex items-center gap-1.5 font-label border border-[#51652a]/30 disabled:opacity-50 hover:shadow-sm"
+            className="bg-[#5F8CB2]/10 hover:bg-[#5F8CB2]/20 text-[#4C7397] text-xs font-bold px-4 py-2.5 rounded-full transition-all cursor-pointer flex items-center gap-1.5 font-label border border-[#DBB092] disabled:opacity-50 hover:shadow-sm"
             title="Sync Database"
           >
             <span className={`material-symbols-outlined text-[18px] ${isLoading ? 'animate-spin' : ''}`}>sync</span> 
@@ -198,7 +198,7 @@ export default function SuperAdminWorkspace({ triggerToast }) {
             <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
             <input
               type="text"
-              className="ghost-input pl-10 pr-10 py-2.5 rounded-full text-xs w-full shadow-sm bg-white border border-[#001d11]/10 focus:border-[#51652a] outline-none transition-all"
+              className="ghost-input pl-10 pr-10 py-2.5 rounded-full text-xs w-full shadow-sm bg-white border border-[#DBB092]/50 focus:border-[#4C7397] outline-none transition-all"
               placeholder="Search by name, email, school..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -215,7 +215,7 @@ export default function SuperAdminWorkspace({ triggerToast }) {
           
           <button
             onClick={handleDownloadCSV}
-            className="bg-[#0A3323] hover:bg-[#001d11] text-white text-xs font-bold px-6 py-2.5 rounded-full transition-all cursor-pointer shadow-sm flex items-center gap-1.5 font-label border-0 hover:shadow-md"
+            className="bg-[#4C7397] hover:bg-[#181819] text-white text-xs font-bold px-6 py-2.5 rounded-full transition-all cursor-pointer shadow-sm flex items-center gap-1.5 font-label border-0 hover:shadow-md"
           >
             <span className="material-symbols-outlined text-[18px]">download</span> Export CSV
           </button>
@@ -224,53 +224,53 @@ export default function SuperAdminWorkspace({ triggerToast }) {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 font-label">
-        <div className="bg-white border border-[#ECE9CB]/50 rounded-[24px] p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-          <div className="w-12 h-12 rounded-2xl bg-[#d3eca2]/40 text-[#576b30] flex items-center justify-center shadow-inner">
+        <div className="bg-white border border-[#DBB092]/50 rounded-[24px] p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+          <div className="w-12 h-12 rounded-2xl bg-[#A4D0ED]/40 text-[#4C7397] flex items-center justify-center shadow-inner">
             <span className="material-symbols-outlined text-[24px]">database</span>
           </div>
           <div>
-            <div className="text-3xl font-extrabold text-[#001d11] tracking-tight">{totalCount}</div>
+            <div className="text-3xl font-extrabold text-[#4C7397] tracking-tight">{totalCount}</div>
             <div className="text-xs text-outline font-bold uppercase mt-0.5">Total Waitlist</div>
           </div>
         </div>
 
-        <div className="bg-white border border-[#ECE9CB]/50 rounded-[24px] p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-          <div className="w-12 h-12 rounded-2xl bg-[#F2EFD0] text-[#0A3323] flex items-center justify-center shadow-inner">
+        <div className="bg-white border border-[#DBB092]/50 rounded-[24px] p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+          <div className="w-12 h-12 rounded-2xl bg-[#EDCEAF] text-[#4C7397] flex items-center justify-center shadow-inner">
             <span className="material-symbols-outlined text-[24px]">school</span>
           </div>
           <div>
-            <div className="text-3xl font-extrabold text-[#001d11] tracking-tight">{class12Count}</div>
+            <div className="text-3xl font-extrabold text-[#4C7397] tracking-tight">{class12Count}</div>
             <div className="text-xs text-outline font-bold uppercase mt-0.5">Class 12</div>
           </div>
         </div>
 
-        <div className="bg-white border border-[#ECE9CB]/50 rounded-[24px] p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
-          <div className="w-12 h-12 rounded-2xl bg-[#EAF2D3] text-[#0A3323] flex items-center justify-center shadow-inner">
+        <div className="bg-white border border-[#DBB092]/50 rounded-[24px] p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+          <div className="w-12 h-12 rounded-2xl bg-[#A4D0ED]/40 text-[#4C7397] flex items-center justify-center shadow-inner">
             <span className="material-symbols-outlined text-[24px]">assignment_turned_in</span>
           </div>
           <div>
-            <div className="text-3xl font-extrabold text-[#001d11] tracking-tight">{class11Count + class10Count}</div>
+            <div className="text-3xl font-extrabold text-[#4C7397] tracking-tight">{class11Count + class10Count}</div>
             <div className="text-xs text-outline font-bold uppercase mt-0.5">Classes 10 & 11</div>
           </div>
         </div>
 
-        <div className="bg-white border border-[#ECE9CB]/50 rounded-[24px] p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+        <div className="bg-white border border-[#DBB092]/50 rounded-[24px] p-6 shadow-sm flex items-center gap-4 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
           <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-800 flex items-center justify-center shadow-inner">
             <span className="material-symbols-outlined text-[24px]">location_on</span>
           </div>
           <div>
-            <div className="text-3xl font-extrabold text-[#001d11] tracking-tight">{Object.keys(cityBreakdown).length}</div>
+            <div className="text-3xl font-extrabold text-[#4C7397] tracking-tight">{Object.keys(cityBreakdown).length}</div>
             <div className="text-xs text-outline font-bold uppercase mt-0.5">Unique Cities</div>
           </div>
         </div>
       </div>
 
       {/* Database Grid view */}
-      <div className="bg-white border border-[#ECE9CB]/50 rounded-[24px] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      <div className="bg-white border border-[#DBB092]/50 rounded-[24px] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-[#f8f5d6]/40 text-[9px] uppercase tracking-wider text-[#51652a] font-bold border-b border-[#ECE9CB]/50 font-label">
+              <tr className="bg-[#EDCEAF]/20 text-[9px] uppercase tracking-wider text-[#4C7397] font-bold border-b border-[#DBB092]/50 font-label">
                 <th className="py-4 px-6">Name</th>
                 <th className="py-4 px-6">Class</th>
                 <th className="py-4 px-6">School</th>
@@ -281,9 +281,9 @@ export default function SuperAdminWorkspace({ triggerToast }) {
                 <th className="py-4 px-6 text-center">Manage</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#ECE9CB]/20 text-[#001d11]">
+            <tbody className="divide-y divide-[#DBB092]/20 text-[#181819]">
               {filtered.map((reg) => (
-                <tr key={reg.id} className="hover:bg-[#f8f5d6]/20 transition-colors">
+                <tr key={reg.id} className="hover:bg-[#EDCEAF]/10 transition-colors">
                   <td className="py-4 px-6 font-bold">{reg.name}</td>
                   <td className="py-4 px-6 font-semibold">{reg.studentClass}</td>
                   <td className="py-4 px-6 font-light">{reg.school}</td>
@@ -321,7 +321,7 @@ export default function SuperAdminWorkspace({ triggerToast }) {
                       {searchQuery && (
                         <button
                           onClick={() => setSearchQuery('')}
-                          className="bg-transparent border border-[#51652a]/20 hover:border-[#51652a] text-[#51652a] text-[10px] font-bold px-3 py-1.5 rounded-full cursor-pointer transition-colors"
+                          className="bg-transparent border border-[#4C7397]/20 hover:border-[#4C7397] text-[#4C7397] text-[10px] font-bold px-3 py-1.5 rounded-full cursor-pointer transition-colors"
                         >
                           Clear Search
                         </button>

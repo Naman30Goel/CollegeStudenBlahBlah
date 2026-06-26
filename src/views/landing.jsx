@@ -62,7 +62,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
 
 
   return (
-    <div className="bg-gradient-to-b from-[#FEFBDB] via-[#EAF2D3]/40 to-[#FEFBDB] min-h-screen flex flex-col overflow-x-hidden font-sans">
+    <div className="bg-gradient-to-b from-[#FCF5EB] via-[#A4D0ED]/20 to-[#FCF5EB] min-h-screen flex flex-col overflow-x-hidden font-sans">
       
       {/* Background illustration wrapper for Navbar + Hero */}
       <div className="relative w-full">
@@ -72,29 +72,29 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
           style={{ backgroundImage: "url('/images/hero_background.png')" }}
         ></div>
         {/* Edge gradient overlays to blend illustration into background color */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FEFBDB]/10 to-[#FEFBDB] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FCF5EB]/10 to-[#FCF5EB] pointer-events-none"></div>
 
         {/* Floating Pill Top Nav Bar */}
         <div className="w-full px-6 pt-4 relative z-50">
-          <header className="max-w-7xl mx-auto bg-white/95 backdrop-blur-md border border-[#ECE9CB]/50 rounded-full px-8 py-3.5 flex justify-between items-center shadow-sm">
+          <header className="max-w-7xl mx-auto bg-white/95 backdrop-blur-md border border-[#DBB092]/50 rounded-full px-8 py-3.5 flex justify-between items-center shadow-sm">
             <div className="flex items-center gap-2">
-              <span className="text-[#0A3323] font-bold text-xl tracking-tight">ProfilED</span>
+              <span className="text-[#4C7397] font-bold text-xl tracking-tight">ProfilED</span>
             </div>
             
             <nav className="hidden md:flex gap-8 text-xs font-bold font-label">
-              <a href="#" className="text-[#0A3323] border-b-2 border-[#0A3323] pb-0.5">Home</a>
+              <a href="#" className="text-[#4C7397] border-b-2 border-[#4C7397] pb-0.5">Home</a>
             </nav>
             
             <div className="flex items-center gap-4 font-label">
               <button
                 onClick={onAdminLogin}
-                className="text-[#0A3323] hover:text-[#001d11] hover:underline text-xs font-bold transition-all cursor-pointer bg-transparent border-0 py-2.5"
+                className="text-[#4C7397] hover:text-[#181819] hover:underline text-xs font-bold transition-all cursor-pointer bg-transparent border-0 py-2.5"
               >
                 Admin Login
               </button>
               <button
                 onClick={handleOpenRegisterModal}
-                className="bg-[#0A3323] hover:bg-[#001d11] text-white text-xs font-bold px-6 py-2.5 rounded-full transition-colors cursor-pointer shadow-sm border-0"
+                className="bg-[#4C7397] hover:bg-[#181819] text-white text-xs font-bold px-6 py-2.5 rounded-full transition-colors cursor-pointer shadow-sm border-0"
               >
                 Get Started
               </button>
@@ -105,8 +105,8 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
         {/* Hero Section */}
         <section className="relative z-10 w-full min-h-[500px] py-16 px-6 flex items-center justify-center">
           {/* Central Card */}
-          <div className="bg-white/90 backdrop-blur-md border border-[#ECE9CB]/40 rounded-[32px] p-10 max-w-lg w-full text-center relative z-10 shadow-lg hover:shadow-xl transition-all duration-300">
-            <h1 className="text-[#0A3323] font-bold text-4xl sm:text-5xl tracking-tight leading-tight mb-4">
+          <div className="bg-white/90 backdrop-blur-md border border-[#DBB092]/40 rounded-[32px] p-10 max-w-lg w-full text-center relative z-10 shadow-lg hover:shadow-xl transition-all duration-300">
+            <h1 className="text-[#4C7397] font-bold text-4xl sm:text-5xl tracking-tight leading-tight mb-4">
               Build Your Profile.<br />
               Discover Your<br />
               Future.
@@ -119,14 +119,14 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
             
             <button
               onClick={handleOpenRegisterModal}
-              className="bg-[#0A3323] hover:bg-[#001d11] text-white text-xs font-bold px-7 py-3 rounded-full transition-all duration-200 cursor-pointer shadow-md hover:-translate-y-0.5 mb-6 border-0"
+              className="bg-[#4C7397] hover:bg-[#181819] text-white text-xs font-bold px-7 py-3 rounded-full transition-all duration-200 cursor-pointer shadow-md hover:-translate-y-0.5 mb-6 border-0"
             >
               Pre-Register
             </button>
 
-            <div className="flex justify-center gap-2.5 text-[9px] font-bold text-[#0A3323] font-label">
-              <span className="px-3 py-1 bg-[#0A3323]/5 border border-[#0A3323]/25 rounded-full">#FutureReady</span>
-              <span className="px-3 py-1 bg-[#0A3323]/5 border border-[#0A3323]/25 rounded-full">#CollegeBound</span>
+            <div className="flex justify-center gap-2.5 text-[9px] font-bold text-[#4C7397] font-label">
+              <span className="px-3 py-1 bg-[#4C7397]/5 border border-[#4C7397]/25 rounded-full">#FutureReady</span>
+              <span className="px-3 py-1 bg-[#4C7397]/5 border border-[#4C7397]/25 rounded-full">#CollegeBound</span>
             </div>
           </div>
         </section>
@@ -164,10 +164,10 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
             <div className="p-5 flex-1 flex flex-col justify-between gap-3">
               <div>
                 <div className="flex gap-2 flex-wrap mb-2.5 font-label">
-                  <span className="bg-[#F2EFD0] text-[#0A3323] text-[9px] font-bold px-3 py-1 rounded-full">
+                  <span className="bg-[#EDCEAF] text-[#4C7397] text-[9px] font-bold px-3 py-1 rounded-full">
                     Corporate Campus
                   </span>
-                  <span className="bg-[#F2EFD0] text-[#0A3323] text-[9px] font-bold px-3 py-1 rounded-full">
+                  <span className="bg-[#EDCEAF] text-[#4C7397] text-[9px] font-bold px-3 py-1 rounded-full">
                     Leadership
                   </span>
                 </div>
@@ -194,10 +194,10 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
             <div className="p-5 flex-1 flex flex-col justify-between gap-3">
               <div>
                 <div className="flex gap-2 flex-wrap mb-2.5 font-label">
-                  <span className="bg-[#F2EFD0] text-[#0A3323] text-[9px] font-bold px-3 py-1 rounded-full">
+                  <span className="bg-[#EDCEAF] text-[#4C7397] text-[9px] font-bold px-3 py-1 rounded-full">
                     Tech Hub
                   </span>
-                  <span className="bg-[#F2EFD0] text-[#0A3323] text-[9px] font-bold px-3 py-1 rounded-full">
+                  <span className="bg-[#EDCEAF] text-[#4C7397] text-[9px] font-bold px-3 py-1 rounded-full">
                     Agile
                   </span>
                 </div>
@@ -224,10 +224,10 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
             <div className="p-5 flex-1 flex flex-col justify-between gap-3">
               <div>
                 <div className="flex gap-2 flex-wrap mb-2.5 font-label">
-                  <span className="bg-[#F2EFD0] text-[#0A3323] text-[9px] font-bold px-3 py-1 rounded-full">
+                  <span className="bg-[#EDCEAF] text-[#4C7397] text-[9px] font-bold px-3 py-1 rounded-full">
                     Innovation
                   </span>
-                  <span className="bg-[#F2EFD0] text-[#0A3323] text-[9px] font-bold px-3 py-1 rounded-full">
+                  <span className="bg-[#EDCEAF] text-[#4C7397] text-[9px] font-bold px-3 py-1 rounded-full">
                     Residential
                   </span>
                 </div>
@@ -254,10 +254,10 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
             <div className="p-5 flex-1 flex flex-col justify-between gap-3">
               <div>
                 <div className="flex gap-2 flex-wrap mb-2.5 font-label">
-                  <span className="bg-[#F2EFD0] text-[#0A3323] text-[9px] font-bold px-3 py-1 rounded-full">
+                  <span className="bg-[#EDCEAF] text-[#4C7397] text-[9px] font-bold px-3 py-1 rounded-full">
                     Innovative Learning
                   </span>
-                  <span className="bg-[#F2EFD0] text-[#0A3323] text-[9px] font-bold px-3 py-1 rounded-full">
+                  <span className="bg-[#EDCEAF] text-[#4C7397] text-[9px] font-bold px-3 py-1 rounded-full">
                     Tech First
                   </span>
                 </div>
@@ -273,7 +273,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
       {/* Footer */}
       <footer className="max-w-7xl mx-auto px-6 py-8 w-full mt-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-label text-on-surface-variant">
-          <span className="font-bold text-[#0A3323] text-sm">ProfilED</span>
+          <span className="font-bold text-[#4C7397] text-sm">ProfilED</span>
           
           <div className="flex gap-6 font-medium">
             <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
@@ -287,11 +287,11 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
       {/* Pre-Register Modal Overlay */}
       {showRegisterModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[150] flex items-center justify-center p-4">
-          <div className="bg-white border border-[#ECE9CB]/40 rounded-[32px] w-full max-w-lg shadow-2xl p-8 relative font-sans text-left animate-fade-up space-y-5">
+          <div className="bg-white border border-[#DBB092]/40 rounded-[32px] w-full max-w-lg shadow-2xl p-8 relative font-sans text-left animate-fade-up space-y-5">
             <button 
               type="button" 
               onClick={() => setShowRegisterModal(false)} 
-              className="absolute top-4 right-4 text-on-surface-variant hover:text-[#0A3323] cursor-pointer text-base bg-transparent border-0 font-bold"
+              className="absolute top-4 right-4 text-on-surface-variant hover:text-[#4C7397] cursor-pointer text-base bg-transparent border-0 font-bold"
             >
               ✕
             </button>
@@ -312,7 +312,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
                       value={name} 
                       onChange={(e) => setName(e.target.value)}
                       className="ghost-input px-3.5 py-2.5 rounded-full w-full"
-                      style={{ backgroundColor: '#F7F4D5' }}
+                      style={{ backgroundColor: '#EDCEAF' }}
                       required
                     />
                   </div>
@@ -323,7 +323,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
                       <select 
                         value={studentClass} 
                         onChange={(e) => setStudentClass(e.target.value)}
-                        className="ghost-input px-3.5 py-2.5 rounded-full w-full appearance-none bg-[#F7F4D5]"
+                        className="ghost-input px-3.5 py-2.5 rounded-full w-full appearance-none bg-[#EDCEAF]"
                         required
                       >
                         <option value="Class 12">Class 12</option>
@@ -345,7 +345,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
                         value={city} 
                         onChange={(e) => setCity(e.target.value)}
                         className="ghost-input px-3.5 py-2.5 rounded-full w-full"
-                        style={{ backgroundColor: '#F7F4D5' }}
+                        style={{ backgroundColor: '#EDCEAF' }}
                         required
                       />
                     </div>
@@ -359,7 +359,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
                       value={school} 
                       onChange={(e) => setSchool(e.target.value)}
                       className="ghost-input px-3.5 py-2.5 rounded-full w-full"
-                      style={{ backgroundColor: '#F7F4D5' }}
+                      style={{ backgroundColor: '#EDCEAF' }}
                       required
                     />
                   </div>
@@ -372,7 +372,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
                       value={email} 
                       onChange={(e) => setEmail(e.target.value)}
                       className="ghost-input px-3.5 py-2.5 rounded-full w-full"
-                      style={{ backgroundColor: '#F7F4D5' }}
+                      style={{ backgroundColor: '#EDCEAF' }}
                       required
                     />
                   </div>
@@ -385,15 +385,15 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
                       value={phone} 
                       onChange={(e) => setPhone(e.target.value)}
                       className="ghost-input px-3.5 py-2.5 rounded-full w-full"
-                      style={{ backgroundColor: '#F7F4D5' }}
+                      style={{ backgroundColor: '#EDCEAF' }}
                       required
                     />
                   </div>
                 </div>
 
                 <div className="flex gap-3 justify-end pt-2 font-label">
-                  <button type="button" onClick={() => setShowRegisterModal(false)} className="border border-[#ECE9CB] hover:bg-surface-container text-[#0A3323] px-5 py-2.5 rounded-full text-xs font-bold cursor-pointer bg-transparent font-sans">Cancel</button>
-                  <button type="submit" className="bg-[#0A3323] hover:bg-[#001d11] text-white px-5 py-2.5 rounded-full text-xs font-bold cursor-pointer border-0 font-sans">Submit Pre-Registration</button>
+                  <button type="button" onClick={() => setShowRegisterModal(false)} className="border border-[#DBB092] hover:bg-surface-container text-[#4C7397] px-5 py-2.5 rounded-full text-xs font-bold cursor-pointer bg-transparent font-sans">Cancel</button>
+                  <button type="submit" className="bg-[#4C7397] hover:bg-[#181819] text-white px-5 py-2.5 rounded-full text-xs font-bold cursor-pointer border-0 font-sans">Submit Pre-Registration</button>
                 </div>
               </form>
             ) : (
@@ -409,7 +409,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
                       setShowRegisterModal(false);
                       setIsRegistered(false);
                     }}
-                    className="bg-[#0A3323] hover:bg-[#001d11] text-white text-xs font-bold px-6 py-2.5 rounded-full transition-colors cursor-pointer shadow border-0 font-label"
+                    className="bg-[#4C7397] hover:bg-[#181819] text-white text-xs font-bold px-6 py-2.5 rounded-full transition-colors cursor-pointer shadow border-0 font-label"
                   >
                     Back to Home
                   </button>

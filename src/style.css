@@ -6,49 +6,49 @@
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 
   /* Theme color overrides from DESIGN.md */
-  --color-primary: #001d11;
-  --color-primary-container: #0a3323;
+  --color-primary: #4C7397;
+  --color-primary-container: #5F8CB2;
   --color-on-primary: #ffffff;
-  --color-on-primary-container: #749d87;
-  --color-inverse-primary: #a6d0b9;
+  --color-on-primary-container: #181819;
+  --color-inverse-primary: #A4D0ED;
 
-  --color-secondary: #51652a;
+  --color-secondary: #6BA4CD;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #d3eca2;
-  --color-on-secondary-container: #576b30;
+  --color-secondary-container: #A4D0ED;
+  --color-on-secondary-container: #4C7397;
 
-  --color-tertiary: #2f0d08;
+  --color-tertiary: #F28C28;
   --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #49211b;
-  --color-on-tertiary-container: #c0857c;
+  --color-tertiary-container: #EDCEAF;
+  --color-on-tertiary-container: #181819;
 
-  --color-background: #fefbdb;
-  --color-on-background: #1d1c0a;
+  --color-background: #FCF5EB;
+  --color-on-background: #181819;
 
-  --color-surface: #fefbdb;
-  --color-on-surface: #1d1c0a;
-  --color-surface-dim: #dedbbd;
-  --color-surface-bright: #fefbdb;
-  --color-surface-variant: #e7e4c5;
-  --color-on-surface-variant: #414844;
+  --color-surface: #FCF5EB;
+  --color-on-surface: #181819;
+  --color-surface-dim: #EDCEAF;
+  --color-surface-bright: #FCF5EB;
+  --color-surface-variant: #EDCEAF;
+  --color-on-surface-variant: #4C7397;
   
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f8f5d6;
-  --color-surface-container: #f2efd0;
-  --color-surface-container-high: #ece9cb;
-  --color-surface-container-highest: #e7e4c5;
+  --color-surface-container-low: #FCF5EB;
+  --color-surface-container: #EDCEAF;
+  --color-surface-container-high: #DBB092;
+  --color-surface-container-highest: #DBB092;
 
-  --color-outline: #717973;
-  --color-outline-variant: #c1c8c2;
+  --color-outline: #A79E98;
+  --color-outline-variant: #DBB092;
 
-  --color-error: #ba1a1a;
+  --color-error: #F28C28;
   --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
+  --color-error-container: #EDCEAF;
+  --color-on-error-container: #F28C28;
 
-  --color-midnight-green: #105666;
+  --color-midnight-green: #5F8CB2;
   --color-cloud-white: #ffffff;
-  --color-deep-forest: #061f15;
+  --color-deep-forest: #4C7397;
 }
 
 @layer utilities {
@@ -60,61 +60,61 @@
   }
 
   .glass-dock {
-    background: rgba(242, 239, 208, 0.6); /* surface-container with blur */
+    background: rgba(237, 206, 175, 0.6); /* surface-container with blur */
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.6);
   }
 
   .long-shadow {
-    box-shadow: 0px 10px 40px rgba(10, 51, 35, 0.05);
+    box-shadow: 0px 10px 40px rgba(76, 115, 151, 0.05);
   }
 
   .ambient-shadow-level-1 {
-    box-shadow: 0px 4px 20px rgba(10, 51, 35, 0.04);
+    box-shadow: 0px 4px 20px rgba(76, 115, 151, 0.04);
   }
 
   .primary-button {
-    background-color: #0a3323;
+    background-color: #4C7397;
     color: #ffffff;
     border-radius: 9999px;
-    box-shadow: 0 4px 10px rgba(10, 51, 35, 0.1);
+    box-shadow: 0 4px 10px rgba(76, 115, 151, 0.15);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   .primary-button:hover {
-    background-color: #001d11;
+    background-color: #5F8CB2;
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(10, 51, 35, 0.15);
+    box-shadow: 0 6px 15px rgba(76, 115, 151, 0.2);
   }
 
   .secondary-button {
     background-color: transparent;
-    border: 1.5px solid #0a3323;
-    color: #0a3323;
+    border: 1.5px solid #4C7397;
+    color: #4C7397;
     border-radius: 9999px;
     transition: all 0.2s ease;
   }
   
   .secondary-button:hover {
-    background-color: rgba(10, 51, 35, 0.05);
+    background-color: rgba(76, 115, 151, 0.05);
   }
 
   .ghost-input {
-    background-color: #f7f4d5;
-    border: 2px solid transparent;
+    background-color: #FCF5EB;
+    border: 1.5px solid #DBB092;
     transition: all 0.2s ease;
   }
   
   .ghost-input:focus {
     outline: none;
-    border-color: #51652a;
+    border-color: #4C7397;
     background-color: #ffffff;
   }
 }
 
 body {
-  background-color: #fefbdb;
+  background-color: #FCF5EB;
   font-family: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
 }
 
