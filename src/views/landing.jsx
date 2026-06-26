@@ -21,6 +21,16 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
       return;
     }
     
+    // Always store in the local state/store first
+    store.addPreRegistration({
+      name,
+      studentClass,
+      school,
+      city,
+      email,
+      phone
+    });
+
     try {
       await supabase.addWaitlist({
         name,
@@ -33,7 +43,9 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
       setIsRegistered(true);
     } catch (err) {
       console.error('Failed to submit to Supabase waitlist:', err);
-      alert('Failed to submit pre-registration. Please check your network connection and try again.');
+      // Mark as registered in the UI since it is successfully saved to local store
+      setIsRegistered(true);
+      alert('Your registration has been saved locally, but we could not sync it with the server.');
     }
   };
 

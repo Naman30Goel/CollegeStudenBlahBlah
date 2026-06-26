@@ -98,10 +98,20 @@ export default function App() {
 
   // If user is not logged in or we are in locked production mode (super admin bypasses lockdown)
   if (!activeUser || (!isDevMode && !isSuperAdmin)) {
-    if (!isDevMode && !isSuperAdmin) {
+    if (showLogin) {
       return (
         <>
-          <LandingPage onGetStarted={() => setShowLogin(true)} onAdminLogin={() => setShowLogin(true)} />
+          <Login
+            onLoginSuccess={(user) => {
+              setShowLogin(false);
+              triggerToast(`Welcome back, ${user.name}!`, 'success');
+            }}
+            onBackToLanding={() => setShowLogin(false)}
+            onStartOnboarding={() => {
+              setIsOnboarding(true);
+            }}
+            triggerToast={triggerToast}
+          />
           {renderToasts()}
         </>
       );
@@ -126,20 +136,10 @@ export default function App() {
       );
     }
 
-    if (showLogin) {
+    if (!isDevMode && !isSuperAdmin) {
       return (
         <>
-          <Login
-            onLoginSuccess={(user) => {
-              setShowLogin(false);
-              triggerToast(`Welcome back, ${user.name}!`, 'success');
-            }}
-            onBackToLanding={() => setShowLogin(false)}
-            onStartOnboarding={() => {
-              setIsOnboarding(true);
-            }}
-            triggerToast={triggerToast}
-          />
+          <LandingPage onGetStarted={() => setShowLogin(true)} onAdminLogin={() => setShowLogin(true)} />
           {renderToasts()}
         </>
       );

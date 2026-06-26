@@ -765,6 +765,14 @@ class Store {
     return this._state.preRegistrations || [];
   }
 
+  deletePreRegistration(id) {
+    if (this._state.preRegistrations) {
+      this._state.preRegistrations = this._state.preRegistrations.filter(r => r.id !== id);
+      this._save();
+      this._notify();
+    }
+  }
+
   resetAll() {
     localStorage.removeItem(STORAGE_KEY);
     this._state = createInitialState();
