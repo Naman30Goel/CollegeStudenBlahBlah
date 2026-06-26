@@ -32,13 +32,13 @@ export default function Login({ onLoginSuccess, onBackToLanding, onStartOnboardi
         <div className="absolute bottom-10 right-10 w-80 h-80 bg-tertiary/10 rounded-full blur-3xl pointer-events-none"></div>
         
         <div className="max-w-md z-10">
-          <div
+          <img
+            src="/images/mascot.png"
             onClick={onBackToLanding}
-            className="w-12 h-12 bg-primary text-on-primary rounded-xl font-bold flex items-center justify-center text-xl cursor-pointer hover:bg-primary/90 transition-all mb-6 shadow-md hover:-translate-y-0.5"
+            alt="ProfilED Mascot"
+            className="w-14 h-14 object-contain cursor-pointer hover:scale-105 transition-all mb-6 shadow-sm hover:-translate-y-0.5"
             title="Back to Landing Page"
-          >
-            P
-          </div>
+          />
           <h1 className="font-sans text-5xl font-extrabold tracking-tight mb-4 text-on-primary">ProfilED</h1>
           <p className="text-lg text-on-primary-container/90 font-light leading-relaxed mb-8">
             The Verified High School Portfolio & AI Student Discovery Network

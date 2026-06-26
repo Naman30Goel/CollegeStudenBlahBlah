@@ -99,12 +99,10 @@ export default function CollegeWorkspace({ activeTab, triggerToast, onTabChange 
             ? 'bg-[#0A3323] text-white border border-white/10' 
             : 'bg-white/95 backdrop-blur-md border border-[#ECE9CB]/50 text-primary'
         }`}>
-          {/* Logo with Sprout Leaf Icon */}
+          {/* Logo with Mascot */}
           <div className="flex items-center gap-1.5">
             {!isDarkHeader && (
-              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current text-[#0A3323] shrink-0">
-                <path d="M21 3s-3.87 0-7.64 3.78C11.53 8.61 10.43 10.96 10 13h4c.43-2.04 1.53-4.39 3.36-6.22C19.13 5 21 3 21 3zm-9 10H8c-.43 2.04-1.53 4.39-3.36 6.22C2.87 21 1 23 1 23s3.87 0 7.64-3.78C10.47 17.39 11.57 15.04 12 13z" />
-              </svg>
+              <img src="/images/mascot.png" alt="ProfilED Logo" className="h-9 w-auto object-contain shrink-0" />
             )}
             <span className={`font-bold text-xl tracking-tight ${isDarkHeader ? 'text-white' : 'text-[#0A3323]'}`}>
               {isDarkHeader ? 'ScholarCloud' : 'ProfilED'}

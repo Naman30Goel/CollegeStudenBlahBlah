@@ -78,6 +78,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
         <div className="w-full px-6 pt-4 relative z-50">
           <header className="max-w-7xl mx-auto bg-white/95 backdrop-blur-md border border-[#DBB092]/50 rounded-full px-8 py-3.5 flex justify-between items-center shadow-sm">
             <div className="flex items-center gap-2">
+              <img src="/images/mascot.png" alt="ProfilED Logo" className="h-9 w-auto object-contain" />
               <span className="text-[#4C7397] font-bold text-xl tracking-tight">ProfilED</span>
             </div>
             

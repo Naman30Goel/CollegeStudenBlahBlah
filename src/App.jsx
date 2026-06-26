@@ -164,9 +164,7 @@ export default function App() {
       return (
         <aside className="sidebar w-[260px] bg-surface border-r border-outline-variant/30 hidden md:flex flex-col gap-4 p-6 shrink-0 h-screen fixed left-0 top-0 z-40">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 rounded-lg bg-primary text-on-primary flex items-center justify-center font-bold text-lg">
-              P
-            </div>
+            <img src="/images/mascot.png" alt="ProfilED Logo" className="w-8 h-8 object-contain shrink-0" />
             <div>
               <h1 className="font-headline-md text-headline-md font-bold text-on-surface">ProfilED</h1>
             </div>
@@ -295,9 +293,7 @@ export default function App() {
       return (
         <aside className="sidebar w-[260px] bg-surface border-r border-outline-variant/30 hidden md:flex flex-col gap-4 p-6 shrink-0 h-screen fixed left-0 top-0 z-40">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 rounded-lg bg-primary text-on-primary flex items-center justify-center font-bold text-lg">
-              P
-            </div>
+            <img src="/images/mascot.png" alt="ProfilED Logo" className="w-8 h-8 object-contain shrink-0" />
             <div>
               <h1 className="font-headline-md text-headline-md font-bold text-on-surface">ProfilED</h1>
             </div>
@@ -352,9 +348,7 @@ export default function App() {
       return (
         <aside className="sidebar w-[260px] bg-surface border-r border-outline-variant/30 hidden md:flex flex-col gap-4 p-6 shrink-0 h-screen fixed left-0 top-0 z-40">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 rounded-lg bg-primary text-on-primary flex items-center justify-center font-bold text-lg">
-              P
-            </div>
+            <img src="/images/mascot.png" alt="ProfilED Logo" className="w-8 h-8 object-contain shrink-0" />
             <div>
               <h1 className="font-headline-md text-headline-md font-bold text-on-surface">ProfilED</h1>
             </div>
@@ -383,9 +377,7 @@ export default function App() {
       return (
         <aside className="sidebar w-[260px] bg-surface border-r border-outline-variant/30 hidden md:flex flex-col gap-4 p-6 shrink-0 h-screen fixed left-0 top-0 z-40">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 rounded-lg bg-[#0A3323] text-white flex items-center justify-center font-bold text-lg">
-              P
-            </div>
+            <img src="/images/mascot.png" alt="ProfilED Logo" className="w-8 h-8 object-contain shrink-0" />
             <div>
               <h1 className="font-headline-md text-headline-md font-bold text-[#0A3323] tracking-tight">ProfilED</h1>
             </div>
@@ -415,9 +407,7 @@ export default function App() {
       return (
         <aside className="sidebar w-[260px] bg-surface border-r border-outline-variant/30 hidden md:flex flex-col gap-4 p-6 shrink-0 h-screen fixed left-0 top-0 z-40">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 rounded-lg bg-primary text-on-primary flex items-center justify-center font-bold text-lg">
-              P
-            </div>
+            <img src="/images/mascot.png" alt="ProfilED Logo" className="w-8 h-8 object-contain shrink-0" />
             <div>
               <h1 className="font-headline-md text-headline-md font-bold text-on-surface">ProfilED</h1>
             </div>
