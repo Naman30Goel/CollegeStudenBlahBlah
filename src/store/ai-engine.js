@@ -133,42 +133,42 @@ const COLLEGE_DB = [
 
 export const COURSE_DB = {
   'Computer Science': {
-    icon: '', description: 'AI, software development, systems design',
+    icon: 'computer', description: 'AI, software development, systems design',
     strengths: ['Technology', 'Engineering', 'Mathematics'],
     skills: ['Python', 'JavaScript', 'C++', 'Algorithms', 'Machine Learning'],
   },
   'Business Administration': {
-    icon: '', description: 'Management, strategy, organizational leadership',
+    icon: 'analytics', description: 'Management, strategy, organizational leadership',
     strengths: ['Business', 'Finance', 'Entrepreneurship'],
     skills: ['Leadership', 'Financial Modeling', 'Excel', 'Communication'],
   },
   'Design': {
-    icon: '', description: 'UX/UI, graphic design, industrial design',
+    icon: 'palette', description: 'UX/UI, graphic design, industrial design',
     strengths: ['Design', 'Arts', 'Creative', 'Media'],
     skills: ['Figma', 'Illustration', 'Typography', 'Photography'],
   },
   'Finance & Economics': {
-    icon: '', description: 'Investment banking, economic theory, markets',
+    icon: 'payments', description: 'Investment banking, economic theory, markets',
     strengths: ['Finance', 'Business', 'Economics'],
     skills: ['Financial Modeling', 'Excel', 'Statistics', 'CFA'],
   },
   'Engineering': {
-    icon: '', description: 'Mechanical, electrical, civil, chemical engineering',
+    icon: 'engineering', description: 'Mechanical, electrical, civil, chemical engineering',
     strengths: ['Engineering', 'Robotics', 'Technology'],
     skills: ['CAD', 'Arduino', 'Physics', 'Mathematics'],
   },
   'Liberal Arts & Humanities': {
-    icon: '', description: 'Philosophy, literature, social sciences, history',
+    icon: 'menu_book', description: 'Philosophy, literature, social sciences, history',
     strengths: ['Liberal Arts', 'Social Sciences', 'Arts'],
     skills: ['Writing', 'Research', 'Public Speaking', 'Critical Thinking'],
   },
   'Entrepreneurship': {
-    icon: '', description: 'Startup building, innovation, venture capital',
+    icon: 'rocket_launch', description: 'Startup building, innovation, venture capital',
     strengths: ['Entrepreneurship', 'Business', 'Technology'],
     skills: ['Leadership', 'Pitching', 'Product Management', 'Networking'],
   },
   'Medicine & Biology': {
-    icon: '', description: 'Pre-med, biological research, healthcare systems',
+    icon: 'biotech', description: 'Pre-med, biological research, healthcare systems',
     strengths: ['Medicine', 'Biology', 'Healthcare', 'Science'],
     skills: ['Research', 'Statistics', 'Lab Work', 'Biology'],
   },
@@ -185,8 +185,10 @@ export function calculateCollegeMatch(student, college) {
   const achCategories = student.achievements.map(a => a.category);
 
   // Fallbacks for properties because college can be from SEED_COLLEGES (store.state.colleges) or COLLEGE_DB
+  console.log('DEBUG: calculateCollegeMatch college object:', college);
   const targetGPA = college.targetGPA !== undefined ? college.targetGPA : (college.targetPrefs?.minGPA || 0);
   const strengths = college.strengths || college.targetPrefs?.interests || college.programs || [];
+  console.log('DEBUG: strengths is:', strengths);
 
   // GPA match
   if (gpa >= targetGPA) matchScore += 30;
@@ -297,10 +299,10 @@ export function getStrengthBreakdown(student) {
   outreachScore = Math.min(10, outreachScore);
 
   return [
-    { label: 'GPA Alignment', score: gpaFitScore, max: 10, icon: '' },
-    { label: 'Focus Fit', score: focusScore, max: 10, icon: '' },
-    { label: 'Portfolio size', score: portfolioScore, max: 10, icon: '' },
-    { label: 'Profile Outreach', score: outreachScore, max: 10, icon: '' },
+    { label: 'GPA Alignment', score: gpaFitScore, max: 10, icon: 'school' },
+    { label: 'Focus Fit', score: focusScore, max: 10, icon: 'track_changes' },
+    { label: 'Portfolio size', score: portfolioScore, max: 10, icon: 'emoji_events' },
+    { label: 'Profile Outreach', score: outreachScore, max: 10, icon: 'public' },
   ];
 }
 
