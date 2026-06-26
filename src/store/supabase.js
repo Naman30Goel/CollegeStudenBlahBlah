@@ -4,9 +4,12 @@
 // ============================================================
 
 const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || 'https://yiibcfburlkojbzfkcuh.supabase.co').replace(/\/$/, '');
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpaWJjZmJ1cmxrb2piemZrY3VoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NjE3NDcsImV4cCI6MjA5ODAzNzc0N30.l8mbO1DvlA0B1_wTTSUNhyrfkffzYQvYB0ckQ1NACRM';
 
 export const supabase = {
+  isConfigured() {
+    return !!supabaseKey;
+  },
   async fetch(endpoint, options = {}) {
     if (!supabaseKey) {
       console.warn("Supabase Anon Key is missing. Check your .env configuration.");

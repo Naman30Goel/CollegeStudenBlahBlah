@@ -70,7 +70,7 @@ export default function AdminWorkspace({ activeTab, triggerToast }) {
     const unsubscribe = store.subscribe((newState) => {
       setStoreState({ ...newState });
       const hasSheets = !!(import.meta.env.VITE_GOOGLE_SHEETS_URL);
-      const hasSupabase = !!(import.meta.env.VITE_SUPABASE_ANON_KEY);
+      const hasSupabase = supabase.isConfigured();
       // Automatically keep in sync with local store when operating in local-only database mode
       if (!hasSheets && !hasSupabase) {
         setList((store.getPreRegistrations() || []).map(normalizeRecord));
