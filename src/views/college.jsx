@@ -229,7 +229,7 @@ export default function CollegeWorkspace({ activeTab, triggerToast, onTabChange 
             <a href="#" className="hover:text-primary transition-colors">About</a>
           </div>
           
-          <span className="text-outline font-medium">© 2024 ProfilED. All rights reserved.</span>
+          <span className="text-outline font-medium">© 2026 ProfilED. All rights reserved.</span>
         </div>
       </footer>
 

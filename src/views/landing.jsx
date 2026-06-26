@@ -83,7 +83,6 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
             
             <nav className="hidden md:flex gap-8 text-xs font-bold font-label">
               <a href="#" className="text-[#0A3323] border-b-2 border-[#0A3323] pb-0.5">Home</a>
-              <a href="#" className="text-on-surface-variant hover:text-primary transition-colors">Resources</a>
             </nav>
             
             <div className="flex items-center gap-4 font-label">
@@ -148,7 +147,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Card 1: Masters Union */}
           <div className="bg-white rounded-[24px] overflow-hidden shadow-[0_8px_30px_rgba(10,51,35,0.03)] flex flex-col hover:shadow-[0_12px_40px_rgba(10,51,35,0.06)] transition-all duration-300">
             <div className="relative h-48 overflow-hidden">
@@ -238,6 +237,36 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
               </div>
             </div>
           </div>
+
+          {/* Card 4: Hive School */}
+          <div className="bg-white rounded-[24px] overflow-hidden shadow-[0_8px_30px_rgba(10,51,35,0.03)] flex flex-col hover:shadow-[0_12px_40px_rgba(10,51,35,0.06)] transition-all duration-300">
+            <div className="relative h-48 overflow-hidden">
+              <img src="/images/hive_school.png" alt="Hive School" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+              <div className="absolute bottom-4 left-4 text-white">
+                <h4 className="font-extrabold text-sm tracking-tight">Hive School</h4>
+                <div className="flex items-center gap-1 text-[10px] opacity-90 mt-0.5 font-label">
+                  <span className="material-symbols-outlined text-[12px]">location_on</span>
+                  Bangalore, India
+                </div>
+              </div>
+            </div>
+            <div className="p-5 flex-1 flex flex-col justify-between gap-3">
+              <div>
+                <div className="flex gap-2 flex-wrap mb-2.5 font-label">
+                  <span className="bg-[#F2EFD0] text-[#0A3323] text-[9px] font-bold px-3 py-1 rounded-full">
+                    Innovative Learning
+                  </span>
+                  <span className="bg-[#F2EFD0] text-[#0A3323] text-[9px] font-bold px-3 py-1 rounded-full">
+                    Tech First
+                  </span>
+                </div>
+                <p className="text-xs text-on-surface-variant font-light leading-relaxed">
+                  Pioneering futuristic school campus with integrated digital systems, coding sprints, and project-based growth...
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -251,7 +280,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
             <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
           </div>
           
-          <span className="text-outline font-medium">© 2024 ProfilED. All rights reserved.</span>
+          <span className="text-outline font-medium">© 2026 ProfilED. All rights reserved.</span>
         </div>
       </footer>
 
