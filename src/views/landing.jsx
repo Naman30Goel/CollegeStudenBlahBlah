@@ -17,7 +17,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
 
   const handlePreRegisterSubmit = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !school.trim() || !city.trim() || !email.trim()) {
+    if (!name.trim() || !school.trim() || !city.trim() || !email.trim() || !phone.trim()) {
       return;
     }
     
@@ -345,7 +345,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="font-bold text-primary">Phone Number (Optional)</label>
+                    <label className="font-bold text-primary">Phone Number *</label>
                     <input 
                       type="tel" 
                       placeholder="+91 XXXXX XXXXX" 
@@ -353,6 +353,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
                       onChange={(e) => setPhone(e.target.value)}
                       className="ghost-input px-3.5 py-2.5 rounded-full w-full"
                       style={{ backgroundColor: '#F7F4D5' }}
+                      required
                     />
                   </div>
                 </div>
