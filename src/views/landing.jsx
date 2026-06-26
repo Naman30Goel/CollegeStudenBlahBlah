@@ -290,7 +290,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
 
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex flex-col gap-1">
-                      <label className="font-bold text-primary">Class *</label>
+                      <label className="font-bold text-primary">Class/Status *</label>
                       <select 
                         value={studentClass} 
                         onChange={(e) => setStudentClass(e.target.value)}
@@ -300,6 +300,10 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
                         <option value="Class 12">Class 12</option>
                         <option value="Class 11">Class 11</option>
                         <option value="Class 10">Class 10</option>
+                        <option value="Class 9">Class 9</option>
+                        <option value="Class 8">Class 8</option>
+                        <option value="College">College</option>
+                        <option value="Job">Job</option>
                         <option value="Other">Other</option>
                       </select>
                     </div>
