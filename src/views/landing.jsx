@@ -248,7 +248,7 @@ export default function LandingPage({ onGetStarted, onAdminLogin }) {
                 <h4 className="font-extrabold text-sm tracking-tight">Hive School</h4>
                 <div className="flex items-center gap-1 text-[10px] opacity-90 mt-0.5 font-label">
                   <span className="material-symbols-outlined text-[12px]">location_on</span>
-                  Bangalore, India
+                  Gurgaon, India
                 </div>
               </div>
             </div>
